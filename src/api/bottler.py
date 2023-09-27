@@ -1,3 +1,6 @@
+import sqlalchemy
+from src import database as db
+
 from fastapi import APIRouter, Depends
 from enum import Enum
 from pydantic import BaseModel
@@ -17,6 +20,8 @@ class PotionInventory(BaseModel):
 def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     """ """
     print(potions_delivered)
+    with db.engine.begin() as connection:
+            result = connection.execute(sqlalchemy.text())
 
     return "OK"
 
@@ -32,6 +37,9 @@ def get_bottle_plan():
     # Expressed in integers from 1 to 100 that must sum up to 100.
 
     # Initial logic: bottle all barrels into red potions.
+    with db.engine.begin() as connection:
+            num_red_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
+            # every 100ml is a bottle of potion
 
     return [
             {
@@ -39,3 +47,5 @@ def get_bottle_plan():
                 "quantity": 5,
             }
         ]
+
+    

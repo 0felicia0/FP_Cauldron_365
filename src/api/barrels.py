@@ -1,3 +1,6 @@
+import sqlalchemy
+from src import database as db
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from src.api import auth
@@ -22,6 +25,10 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     """ """
     print(barrels_delivered)
 
+    with db.engine.begin() as connection:
+            num_red_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
+            print(num_red_ml);
+
     return "OK"
 
 # Gets called once a day
@@ -29,10 +36,18 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     print(wholesale_catalog)
-
+    
+    with db.engine.begin() as connection:
+            num_red_potions = connection.execute(sqlalchemy.text("SELECT num_red_potions FROM global_inventory"))
+            # check if less than ten, is so, buy barrel
+    
     return [
         {
             "sku": "SMALL_RED_BARREL",
             "quantity": 1,
         }
-    ]
+    ]     
+
+    
+
+    
