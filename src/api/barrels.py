@@ -25,9 +25,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     """ """
     print(barrels_delivered)
 
-    with db.engine.begin() as connection:
-            num_red_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
-            print(num_red_ml);
+
 
     return "OK"
 
