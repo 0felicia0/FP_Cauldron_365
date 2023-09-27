@@ -37,8 +37,8 @@ def get_bottle_plan():
     # Expressed in integers from 1 to 100 that must sum up to 100.
 
     # Initial logic: bottle all barrels into red potions.
-    with db.engine.begin() as connection:
-            num_red_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
+    #with db.engine.begin() as connection:
+           # num_red_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
             # every 100ml is a bottle of potion
 
     return [
