@@ -13,10 +13,7 @@ def get_catalog():
     """
 
     
-    with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
-            for res in result:
-                  print(res) 
+
             
 
     # Can return a max of 20 items.

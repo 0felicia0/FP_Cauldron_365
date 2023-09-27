@@ -20,8 +20,7 @@ class PotionInventory(BaseModel):
 def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     """ """
     print(potions_delivered)
-    with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text())
+
 
     return "OK"
 
