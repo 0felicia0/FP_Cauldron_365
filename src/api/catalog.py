@@ -22,6 +22,8 @@ def get_catalog():
             
     # Can return a max of 20 items
 
+    if (red_potions_available == 0):
+          return []
 
     #return a dictionary or array of dictionary
     return [
