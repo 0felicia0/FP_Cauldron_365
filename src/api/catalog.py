@@ -14,7 +14,11 @@ def get_catalog():
 
     with db.engine.begin() as connection:
             # is this an int that's returned?
-            num_red_potions = connection.execute(sqlalchemy.text("SELECT num_red_potions FROM global_inventory"))
+            result = connection.execute(sqlalchemy.text("SELECT num_red_potions FROM global_inventory"))
+
+            first_row = result.first()
+
+            red_potions = first_row.num_red_potions
 
     # Can return a max of 20 items
    
@@ -24,7 +28,7 @@ def get_catalog():
             {
                 "sku": "RED_POTION_0",
                 "name": "red potion",
-                "quantity": num_red_potions,
+                "quantity": red_potions,
                 "price": 50,
                 "potion_type": [100, 0, 0, 0],
             }

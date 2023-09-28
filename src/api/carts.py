@@ -51,7 +51,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
     #with db.engine.begin() as connection:
             #result = connection.execute(sqlalchemy.text())
-    #modify database values 
-    return {"total_potions_bought": 1, "total_gold_paid": 50}
+    #modify database values by adding gold and subtracting potions
+    return {"total_potions_bought": 2, "total_gold_paid": 50}
 
     

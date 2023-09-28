@@ -24,19 +24,19 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     # process: once potions are delivered, update the database values
 
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT num_red_potions FROM global_inventory"))
-            num_potions = result.scalar()
+            result = connection.execute(sqlalchemy.text("SELECT num_red_potions, num_red_ml FROM global_inventory"))
+            
+            first_row = result.first()
 
-            result = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
-            num_ml = result.scalar()
+            red_potions = first_row.num_red_potions
+            red_ml = first_row.num_red_ml
 
             # will probably have to adapt to different potion types (colors)
             for p in potions_delivered:
-                 num_potions += p.quantity
-                 num_ml -= 100 * p.quantity
+                 red_potions += p.quantity
+                 red_ml -= 100 * p.quantity
 
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :num_potions"))
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :num_ml"))
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :num_potions, num_red_ml = :num_ml"))
 
     return "OK"
 
@@ -53,10 +53,14 @@ def get_bottle_plan():
 
     # Initial logic: bottle all barrels into red potions.
     with db.engine.begin() as connection:
-            num_ml = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
+            result = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
+
+            first_row = result.first()
+
+            red_ml = first_row.num_red_ml
     
     # every 100ml is a bottle of potion
-    num_potions = num_ml // 100
+    num_potions = red_ml // 100
 
     return [
             {

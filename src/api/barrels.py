@@ -28,22 +28,20 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     # update database values?
     with db.engine.begin() as connection:
             #get original vals
-            result = connection.execute(sqlalchemy.text("SELECT num_red_ml FROM global_inventory"))
-            num_ml = result.scalar()
+            result = connection.execute(sqlalchemy.text("SELECT num_red_ml, gold FROM global_inventory"))
+            first_row = result.first()
 
-            result = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
-            gold_available = result.scalar()
+            gold_available = first_row.gold
+            red_ml = first_row.num_red_ml
 
             #update value
             for barrel in barrels_delivered:
-                num_ml += barrel.ml_per_barrel * barrel.quantity
+                red_ml += barrel.ml_per_barrel * barrel.quantity
                 gold_available -= barrel.price * barrel.quantity
 
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = :num_ml"))
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = :gold_available"))
         
-            
-
     return "OK"
 
 # Gets called once a day
@@ -55,18 +53,19 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     barrels_to_purchace = 0
     
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT num_red_potions FROM global_inventory"))
-            num_potions = result.scalar()
+            result = connection.execute(sqlalchemy.text("SELECT num_red_potions, gold FROM global_inventory"))
+            first_row = result.first()
+
+            red_potions = first_row.num_red_potions
+            gold_available = first_row.gold
             
-            result = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
-            gold = result.scalar()
             # check if less than ten, is so, buy barrel
-    if (num_potions < 10):
+    if (red_potions < 10):
         #buy a barrel based on price and how much gold you have
         for barrel in wholesale_catalog:
-             if (gold >= barrel.price * barrel.quantity):
+             if (gold_available >= barrel.price * barrel.quantity):
                   barrels_to_purchace += barrel.quantity
-                  gold -= barrel.price * barrel.quantity
+                  break
 
    
     return [
