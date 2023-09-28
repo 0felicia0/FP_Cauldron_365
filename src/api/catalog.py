@@ -18,17 +18,16 @@ def get_catalog():
 
             first_row = result.first()
 
-            red_potions_available = int(first_row["num_red_potions"])
-            
+            red_potions = first_row.num_red_potions
+           
     # Can return a max of 20 items
    
-
     #return a dictionary or array of dictionary
     return [
             {
                 "sku": "RED_POTION_0",
                 "name": "red potion",
-                "quantity": red_potions_available,
+                "quantity": red_potions,
                 "price": 50,
                 "potion_type": [100, 0, 0, 0],
             }
