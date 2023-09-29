@@ -60,7 +60,7 @@ def get_bottle_plan():
             red_ml = first_row.num_red_ml
     
     # every 100ml is a bottle of potion
-    num_potions = red_ml // 100
+            num_potions = red_ml // 100
 
     return [
             {
