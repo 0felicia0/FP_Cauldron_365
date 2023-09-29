@@ -25,7 +25,7 @@ class Cart:
         
         self.cart_identification = cart_identification
         self.cart = cart
-        self.items: items
+        self.items = items
 
 @router.post("/")
 def create_cart(new_cart: NewCart):
@@ -56,7 +56,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     customer = get_cart(cart_id)
     customer.items = cart_item
-    
+
     return "OK"
 
 
