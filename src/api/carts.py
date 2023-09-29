@@ -44,8 +44,10 @@ def create_cart(new_cart: NewCart):
 @router.get("/{cart_id}")
 def get_cart(cart_id: int):
     """ """
-
-    return {customers[cart_id]}
+    if cart_id < len(customers):
+        return customers[cart_id]
+    else:
+        return {"error": "Cart not found"}
 
 
 
@@ -53,8 +55,8 @@ def get_cart(cart_id: int):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     customer = get_cart(cart_id)
-    customer.items = CartItem
-
+    customer.items = cart_item
+    
     return "OK"
 
 
