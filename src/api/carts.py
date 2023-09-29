@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 customers = []
-cart_id_gen = 0
+cart_id_gen = 1
 
 class NewCart(BaseModel):
     customer: str
