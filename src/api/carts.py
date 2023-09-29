@@ -31,7 +31,6 @@ class Cart:
 def create_cart(new_cart: NewCart):
 
     """ """
-    global cart_id_gen
     cart = Cart(cart_id_gen, new_cart, None)
 
     customers.append(cart)
