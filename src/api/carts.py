@@ -21,7 +21,7 @@ class CartItem(BaseModel):
     quantity: int
 
 class Cart:
-     def __init__(self, cart_identification, cart, items):
+     def __init__(self, cart_identification, cart, items = []):
         
         self.cart_identification = cart_identification
         self.cart = cart
@@ -82,10 +82,11 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             #check here how many in database left
             customer = get_cart(cart_id)
             for item in customer.items:
-                red_potions -= item.quantity
-                items_bought += item.quantity
-                gold_available += item.quantity * 50
-                gold_paid += item.quantity * 50
+                if item.quantity <= red_potions:
+                    red_potions -= item.quantity
+                    items_bought += item.quantity
+                    gold_available += item.quantity * 50
+                    gold_paid += item.quantity * 50
             
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, gold = :gold_available"), {"red_potions": red_potions, "gold_available": gold_available})
     
