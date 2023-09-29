@@ -20,10 +20,12 @@ class NewCart(BaseModel):
 class CartItem(BaseModel):
     quantity: int
 
-class Cart(BaseModel):
-     cart_identification: int
-     cart: NewCart
-     items: CartItem
+class Cart:
+     def __init__(self, cart_identification, cart, items):
+        
+        self.cart_identification = cart_identification
+        self.cart = cart
+        self.items: items
 
 @router.post("/")
 def create_cart(new_cart: NewCart):
