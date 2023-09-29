@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 customers = []
-cart_id = 1
+cart_id_gen = 1
 
 
 class NewCart(BaseModel):
@@ -31,11 +31,11 @@ def create_cart(new_cart: NewCart):
 
     """ """
 
-    customers[cart_id] = Cart(cart_id, new_cart, None)
-    cart_id+=1
+    customers[cart_id_gen] = Cart(cart_id, new_cart, None)
+    cart_id_gen+=1
 
     # cart_id is defined as a string in API Specs
-    return {"cart_id": cart_id - 1}
+    return {"cart_id": cart_id_gen - 1}
 
 
 @router.get("/{cart_id}")
