@@ -33,9 +33,12 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
             # will probably have to adapt to different potion types (colors)
             for p in potions_delivered:
-                 red_potions += p.quantity
-                 red_ml -= 100 * p.quantity
+                 # string concat for this to remove errors
+                #red_potions += p.quantity
+                #red_ml -= 100 * p.quantity
 
+                red_potions = str(red_potions + p.quantity)
+                red_ml = str(red_ml - 100*p.quantity)
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :num_potions, num_red_ml = :num_ml"))
 
     return "OK"
@@ -60,7 +63,7 @@ def get_bottle_plan():
             red_ml = first_row.num_red_ml
     
     # every 100ml is a bottle of potion
-            num_potions = red_ml // 100
+    num_potions = red_ml // 100
 
     return [
             {
@@ -68,5 +71,6 @@ def get_bottle_plan():
                 "quantity": num_potions,
             }
         ]
+
 
     
