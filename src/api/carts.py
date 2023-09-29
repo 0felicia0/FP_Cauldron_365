@@ -22,7 +22,7 @@ class CartItem(BaseModel):
     quantity: int
 
 class Cart(BaseModel):
-     cart_id: int
+     cart_identification: int
      cart: NewCart
      items: CartItem
 
