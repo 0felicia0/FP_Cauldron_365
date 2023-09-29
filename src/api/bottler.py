@@ -39,7 +39,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
                 red_potions += p.quantity
                 red_ml -= 100*p.quantity
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, num_red_ml = :red_ml"))
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, num_red_ml = :red_ml"), {"red_potions": red_potions, "red_ml": red_ml})
 
     return "OK"
 
