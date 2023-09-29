@@ -49,7 +49,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     print(wholesale_catalog)
 
-    barrels_to_purchace = 0
+    barrels_to_purchase = 0
     
     with db.engine.begin() as connection:
             result = connection.execute(sqlalchemy.text("SELECT num_red_potions, gold FROM global_inventory"))
