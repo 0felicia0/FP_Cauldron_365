@@ -55,7 +55,7 @@ def get_cart(cart_id: int):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     customer = get_cart(cart_id)
-    customer.items = cart_item
+    customer.items.append(cart_item)
 
     return "OK"
 
