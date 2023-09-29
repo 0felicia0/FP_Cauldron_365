@@ -66,7 +66,11 @@ class CartCheckout(BaseModel):
 
 @router.post("/{cart_id}/checkout")
 def checkout(cart_id: int, cart_checkout: CartCheckout):
+
     """ """
+    items_bought = 0
+    gold_paid = 0
+
     with db.engine.begin() as connection:
             result = connection.execute(sqlalchemy.text("SELECT gold, num_red_potions FROM global_inventory"))
 
@@ -77,15 +81,14 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             #add gold from purchase, subtract potions bought
             #check here how many in database left
             customer = get_cart(cart_id)
-            if customer.items.quantity <= red_potions:
-                #can buy
-                bought = customer.items.quantity
-                red_potions -= bought
-                paid = customer.items.quantity * 50
-                gold_available += paid
+            for item in customer.items:
+                red_potions -= item.quantity
+                items_bought += item.quantity
+                gold_available += item.quantity * 50
+                gold_paid += item.quantity * 50
             
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, gold = :gold_available"), {"red_potions": red_potions, "gold_available": gold_available})
     
-    return {"total_potions_bought": bought, "total_gold_paid": paid}
+    return {"total_potions_bought": items_bought, "total_gold_paid": gold_paid}
 
     
