@@ -18,7 +18,7 @@ def get_catalog():
 
             first_row = result.first()
 
-            red_potions_available = int(first_row["num_red_potions"])
+            red_potions_available = first_row.num_red_potions
             
     # Can return a max of 20 items
 
