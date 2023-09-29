@@ -65,7 +65,7 @@ class CartCheckout(BaseModel):
 def checkout(cart_id: int, cart_checkout: CartCheckout):
     """ """
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT gold, num_red_potions FROM golbal_inventory"))
+            result = connection.execute(sqlalchemy.text("SELECT gold, num_red_potions FROM global_inventory"))
 
             first_row = result.first()
             gold_available = first_row.gold
