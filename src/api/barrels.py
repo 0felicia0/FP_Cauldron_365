@@ -65,7 +65,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     if (gold_available >= barrel.price * barrel.quantity):
                         
                         barrels_to_purchase += barrel.quantity
-                        break
+                        
 
    
     return [
