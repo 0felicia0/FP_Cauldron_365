@@ -31,7 +31,7 @@ def create_cart(new_cart: NewCart):
 
     """ """
 
-    customers[cart_id_gen] = Cart(cart_id, new_cart, None)
+    customers[cart_id_gen] = Cart(cart_id_gen, new_cart, None)
     cart_id_gen+=1
 
     # cart_id is defined as a string in API Specs
