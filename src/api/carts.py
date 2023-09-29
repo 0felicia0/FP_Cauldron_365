@@ -11,19 +11,27 @@ router = APIRouter(
     dependencies=[Depends(auth.get_api_key)],
 )
 
-customers = {}
-cart_id = 0
+customers = []
+cart_id = 1
+
 
 class NewCart(BaseModel):
     customer: str
 
+class CartItem(BaseModel):
+    quantity: int
+
+class Cart(BaseModel):
+     cart_id: int
+     cart: NewCart
+     items: CartItem
 
 @router.post("/")
 def create_cart(new_cart: NewCart):
 
     """ """
 
-    customers[cart_id] = new_cart
+    customers[cart_id] = Cart(cart_id, new_cart, None)
     cart_id+=1
 
     # cart_id is defined as a string in API Specs
@@ -37,14 +45,13 @@ def get_cart(cart_id: int):
     return {customers[cart_id]}
 
 
-class CartItem(BaseModel):
-    quantity: int
-
 
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
-    # based off of the sku, update the amount that the customer wants to purchase
+    customer = get_cart(cart_id)
+    customer.items = CartItem
+
     return "OK"
 
 
@@ -63,7 +70,17 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             red_potions = first_row.num_red_potions
 
             #add gold from purchase, subtract potions bought
+            #check here how many in database left
+            customer = get_cart(cart_id)
+            if customer.items.quantity <= red_potions:
+                #can buy
+                bought = customer.items.quantity
+                red_potions -= bought
+                paid = customer.items.quantity * 50
+                gold_available += paid
+            
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, gold = :gold_available"), {"red_potions": red_potions, "gold_available": gold_available})
     
-    return {"total_potions_bought": 1, "total_gold_paid": 50}
+    return {"total_potions_bought": bought, "total_gold_paid": paid}
 
     

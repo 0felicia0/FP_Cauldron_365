@@ -33,10 +33,6 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
             # will probably have to adapt to different potion types (colors)
             for p in potions_delivered:
-                 # string concat for this to remove errors
-                #red_potions += p.quantity
-                #red_ml -= 100 * p.quantity
-
                 red_potions += p.quantity
                 red_ml -= 100*p.quantity
                 
