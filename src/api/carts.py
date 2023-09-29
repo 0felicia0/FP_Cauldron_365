@@ -33,8 +33,8 @@ def create_cart(new_cart: NewCart):
     """ """
     global cart_id_gen
     cart = Cart(cart_id_gen, new_cart, None)
-    
-    customers[cart_id_gen] = cart
+
+    customers.append(cart)
     cart_id_gen+=1
 
     # cart_id is defined as a string in API Specs
