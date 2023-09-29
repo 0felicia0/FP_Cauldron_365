@@ -21,18 +21,18 @@ class CartItem(BaseModel):
     quantity: int
 
 class Cart:
-     def __init__(self, cart_identification, cart, items = []):
+     def __init__(self, cart_identification, cart):
         
         self.cart_identification = cart_identification
         self.cart = cart
-        self.items = items
+        self.items = []
 
 @router.post("/")
 def create_cart(new_cart: NewCart):
 
     """ """
     global cart_id_gen
-    cart = Cart(cart_id_gen, new_cart, [])
+    cart = Cart(cart_id_gen, new_cart)
 
     customers.append(cart)
     cart_id_gen+=1
