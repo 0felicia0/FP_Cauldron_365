@@ -12,8 +12,6 @@ router = APIRouter(
 )
 
 customers = []
-global cart_id_gen
-
 cart_id_gen = 1
 
 class NewCart(BaseModel):
@@ -31,6 +29,7 @@ class Cart(BaseModel):
 def create_cart(new_cart: NewCart):
 
     """ """
+    global cart_id_gen
     
     customers[cart_id_gen] = Cart(cart_id_gen, new_cart, None)
     cart_id_gen+=1
