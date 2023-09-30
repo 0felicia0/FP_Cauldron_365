@@ -1,3 +1,6 @@
+import sqlalchemy
+from src import database as db
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from src.api import auth
@@ -12,8 +15,17 @@ router = APIRouter(
 @router.get("/inventory")
 def get_inventory():
     """ """
-    
-    return {"number_of_potions": 0, "ml_in_barrels": 0, "gold": 0}
+    with db.engine.begin() as connection:
+            # is this an int that's returned?
+            result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+
+            first_row = result.first()
+
+            gold = first_row.gold
+            red_potions = first_row.num_red_potions
+            red_ml = first_row.num_red_ml
+
+    return {"number_of_potions": red_potions, "ml_in_barrels": red_ml, "gold": gold}
 
 class Result(BaseModel):
     gold_match: bool
