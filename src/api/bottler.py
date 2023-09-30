@@ -62,6 +62,9 @@ def get_bottle_plan():
     # every 100ml is a bottle of potion
     num_potions = red_ml // 100
 
+    if num_potions == 0:
+         return []
+
     return [
             {
                 "potion_type": [100, 0, 0, 0],

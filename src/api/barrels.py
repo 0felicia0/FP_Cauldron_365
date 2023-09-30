@@ -69,6 +69,8 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             gold_available -= barrel.price
 
 
+    if barrels_to_purchase == 0:
+        return []
 
    
     return [
