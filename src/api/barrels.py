@@ -62,8 +62,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             if (red_potions < 10):
                 #buy a barrel based on price and how much gold you have
                 for barrel in wholesale_catalog:
-                    if (gold_available >= barrel.price * barrel.quantity):
-                        barrels_to_purchase += barrel.quantity
+                    if (gold_available >= barrel.price):
+                        while(gold_available >= barrel.price):
+                            barrels_to_purchase += barrel.quantity
+                            gold_available -= barrel.price
                         
 
    
