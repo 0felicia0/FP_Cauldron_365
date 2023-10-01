@@ -80,7 +80,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             #add gold from purchase, subtract potions bought
             #check here how many in database left
             cart = get_cart(cart_id)
-            for item in cart.items:
+            for item in cart["items"]:
                 if item.quantity <= red_potions:
                     red_potions -= item.quantity
                     items_bought += item.quantity
