@@ -38,13 +38,8 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                 
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, num_red_ml = :red_ml"), {"red_potions": red_potions, "red_ml": red_ml})
 
-    #return "OK"
-    return [
-            {
-                "red_potions": red_potions,
-                "red_ml": red_ml
-            }
-        ]
+    return "OK"
+ 
 # Gets called 4 times a day
 @router.post("/plan")
 def get_bottle_plan():
