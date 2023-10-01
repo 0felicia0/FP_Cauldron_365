@@ -11,7 +11,7 @@ router = APIRouter(
     dependencies=[Depends(auth.get_api_key)],
 )
 
-customers = []
+carts = {}
 cart_id_gen = 0
 
 class NewCart(BaseModel):
@@ -34,28 +34,27 @@ def create_cart(new_cart: NewCart):
     global cart_id_gen
     cart = Cart(cart_id_gen, new_cart)
 
-    customers.append(cart)
+    carts[cart.cart_identification] = cart
     cart_id_gen+=1
 
-    # cart_id is defined as a string in API Specs
-    return {"cart_id": cart_id_gen - 1}
+    return {"cart_id": cart.cart_identification}
 
 
 @router.get("/{cart_id}")
 def get_cart(cart_id: int):
     """ """
-    if cart_id < len(customers):
-        return customers[cart_id]
-    else:
-        return {"error": "Cart not found"}
+    cart = carts.get(cart_id) # get cart from dictionary
 
-
+    if cart is None:
+        return {"error": "cart not found"}
+    
+    return cart
 
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
-    customer = get_cart(cart_id)
-    customer.items.append(cart_item)
+    cart = get_cart(cart_id)
+    cart.items.append(cart_item)
 
     return "OK"
 
@@ -89,6 +88,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                     gold_paid += item.quantity * 50
             
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, gold = :gold_available"), {"red_potions": red_potions, "gold_available": gold_available})
+    
+    carts.pop(cart_id) #remove cart from dictionary bc already processed
     
     return {"total_potions_bought": items_bought, "total_gold_paid": gold_paid}
 
