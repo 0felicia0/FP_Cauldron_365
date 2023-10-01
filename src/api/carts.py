@@ -22,7 +22,7 @@ class CartItem(BaseModel):
 
 class Cart:
      def __init__(self, cart_identification, cart):
-        
+        self.customer = cart.customer
         self.cart_identification = cart_identification
         self.cart = cart
         self.items = []
@@ -35,7 +35,7 @@ def create_cart(new_cart: NewCart):
     cart = Cart(cart_id_gen, new_cart)
 
     carts[cart.cart_identification] = cart
-    cart_id_gen+=1
+    cart_id_gen += 1
 
     return {"cart_id": cart.cart_identification}
 
@@ -79,8 +79,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
 
             #add gold from purchase, subtract potions bought
             #check here how many in database left
-            customer = get_cart(cart_id)
-            for item in customer.items:
+            cart = get_cart(cart_id)
+            for item in cart.items:
                 if item.quantity <= red_potions:
                     red_potions -= item.quantity
                     items_bought += item.quantity
