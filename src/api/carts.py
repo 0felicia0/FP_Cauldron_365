@@ -54,7 +54,9 @@ def get_cart(cart_id: int):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     cart = get_cart(cart_id)
-   
+    if cart is None:
+        return {"error": "cart not found"} 
+    
     cart.items.append(cart_item)
 
     return "OK"
