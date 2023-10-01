@@ -62,20 +62,21 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             if (red_potions < 10):
                 #buy a barrel based on price and how much gold you have
                 for barrel in wholesale_catalog:
-                        quantity = 0
-                        while(gold_available >= barrel.price and quantity < barrel.quantity):
-                            barrels_to_purchase += 1
-                            quantity += 1
-                            gold_available -= barrel.price
+                        if barrel.sku == "SMALL_RED_BARREL": #github specs say just to buy small red barrel
+                            quantity = 0
+                            while(gold_available >= barrel.price and quantity < barrel.quantity):
+                                barrels_to_purchase += 1
+                                quantity += 1
+                                gold_available -= barrel.price
 
 
     if barrels_to_purchase == 0:
         return []
 
-   
+  
     return [
         {
-            "sku": "SMALL_RED_BARREL",
+            "sku": "SMALL_RED_BARREL", # will probably have to adjust later when we purchase something other than small red barrel
             "quantity": barrels_to_purchase,
         }
     ]     
