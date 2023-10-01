@@ -43,7 +43,7 @@ def create_cart(new_cart: NewCart):
 @router.get("/{cart_id}")
 def get_cart(cart_id: int):
     """ """
-    cart = carts.get(cart_id) # get cart from dictionary
+    cart = carts.get(cart_id)# get cart from dictionary
 
     if cart is None:
         return {"error": "cart not found"}
@@ -54,7 +54,7 @@ def get_cart(cart_id: int):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     cart = get_cart(cart_id)
-    
+    return {"type of cart": type(cart)}
     cart.items.append(cart_item)
 
     return "OK"
