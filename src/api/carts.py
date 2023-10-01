@@ -54,6 +54,8 @@ def get_cart(cart_id: int):
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
     cart = get_cart(cart_id)
+
+    #testing purposes
     if not isinstance(cart, Cart):
         return {"error": "cart is not an instance of the Cart class"} 
     
