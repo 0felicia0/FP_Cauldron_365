@@ -74,6 +74,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     items_bought = 0
     gold_paid = 0
 
+    print(cart_checkout.payment)
+
     with db.engine.begin() as connection:
             result = connection.execute(sqlalchemy.text("SELECT gold, num_red_potions FROM global_inventory"))
 

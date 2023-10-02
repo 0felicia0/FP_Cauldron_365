@@ -43,6 +43,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
         
     return "OK"
 
+
 # Gets called once a day
 @router.post("/plan")
 def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
