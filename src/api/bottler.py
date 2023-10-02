@@ -6,6 +6,8 @@ from enum import Enum
 from pydantic import BaseModel
 from src.api import auth
 
+# every alternate tick provides an opportunity to make potions
+
 router = APIRouter(
     prefix="/bottler",
     tags=["bottler"],
