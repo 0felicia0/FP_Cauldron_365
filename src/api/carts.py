@@ -86,13 +86,13 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             #add gold from purchase, subtract potions bought
             #check here how many in database left
             cart = get_cart(cart_id)
-            if len(cart.items) != 0:
-                for item in cart.items:
-                    if item.quantity <= red_potions:
-                        red_potions -= item.quantity
-                        items_bought += item.quantity
-                        gold_available += item.quantity * 50
-                        gold_paid += item.quantity * 50
+            
+            for item in cart.items:
+                if item.quantity <= red_potions:
+                    red_potions -= item.quantity
+                    items_bought += item.quantity
+                    gold_available += item.quantity * 50
+                    gold_paid += item.quantity * 50
             
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, gold = :gold_available"), {"red_potions": red_potions, "gold_available": gold_available})
     
