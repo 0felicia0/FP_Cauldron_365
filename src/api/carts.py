@@ -52,6 +52,7 @@ def get_cart(cart_id: int):
 @router.post("/{cart_id}/items/{item_sku}")
 def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """ """
+    # this one go crazy
     cart = get_cart(cart_id)
 
     #testing purposes
