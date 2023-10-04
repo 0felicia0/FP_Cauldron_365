@@ -103,6 +103,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             "sku": barrel.sku,
                             "quantity": quantity
                          }
+                        
+                         print("Buying red barrel")
+                         print("SKU: ", barrel.sku)
+                         print("QUANTITY BOUGHT: ", quantity)
 
                          barrels.append(red)
                        
@@ -121,6 +125,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             "quantity": quantity
                          }
 
+                         print("Buying green barrel")
+                         print("SKU: ", barrel.sku)
+                         print("QUANTITY BOUGHT: ", quantity)
+
                          barrels.append(green)
 
                  elif "BLUE" in barrel.sku:
@@ -137,6 +145,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                             "sku": barrel.sku,
                             "quantity": quantity
                          }
+
+                         print("Buying blue barrel")
+                         print("SKU: ", barrel.sku)
+                         print("QUANTITY BOUGHT: ", quantity)
 
                          barrels.append(blue)
 
