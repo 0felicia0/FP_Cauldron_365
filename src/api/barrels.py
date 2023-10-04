@@ -91,6 +91,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                  quantity = 0
 
                  if "RED" in barrel.sku:
+                    print("in red plan")
                     if red_potions < 10:
                      
                         while gold_available <= barrel.price and quantity < barrel.quantity and potential_red_potions < 10:
