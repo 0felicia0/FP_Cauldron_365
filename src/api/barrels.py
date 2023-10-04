@@ -87,6 +87,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
             # current version: just buying one barrel per color -> making sure I have enough gold to purchase more than one color
             for barrel in wholesale_catalog:
+                 print(barrel)
                  quantity = 0
 
                  if "RED" in barrel.sku:
