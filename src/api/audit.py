@@ -22,10 +22,18 @@ def get_inventory():
             first_row = result.first()
 
             gold = first_row.gold
+
             red_potions = first_row.num_red_potions
             red_ml = first_row.num_red_ml
 
-    return {"number_of_potions": red_potions, "ml_in_barrels": red_ml, "gold": gold}
+            green_potions = first_row.num_green_potions
+            green_ml = first_row.num_green_ml
+
+            blue_potions = first_row.num_blue_potions
+            blue_ml = first_row.num_blue_ml
+
+
+    return {"number_of_red_ potions": red_potions, "red_ml_in_barrels": red_ml, "number_of_green_potions": green_potions, "green_ml_in_barrels": green_ml, "number_of_blue_potions": blue_potions, "blue_ml_in_barrels": blue_ml, "gold": gold}
 
 class Result(BaseModel):
     gold_match: bool
