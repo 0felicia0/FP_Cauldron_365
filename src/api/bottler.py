@@ -41,13 +41,13 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
             # will probably have to adapt to different potion types (colors)
             for p in potions_delivered:
-                if p.potion_type == [1, 0, 0, 0]:
+                if p.potion_type == [100, 0, 0, 0]:
                     red_potions += p.quantity
                     red_ml -= 100*p.quantity
-                if p.potion_type == [0, 1, 0, 0]:
+                if p.potion_type == [0, 100, 0, 0]:
                     green_potions += p.quantity
                     green_ml -= 100*p.quantity
-                if p.potion_type == [0, 0, 1, 0]:
+                if p.potion_type == [0, 0, 100, 0]:
                     blue_potions += p.quantity
                     blue_ml -= 100*p.quantity
 
