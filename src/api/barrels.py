@@ -98,7 +98,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                         print("potential red: ", potential_red_potions)
                         print("barrel price: ", barrel.price)
                         while gold_available <= barrel.price and quantity < barrel.quantity and potential_red_potions < 10:
-                             print("conditions met ot buy red barrels")
+                             print("conditions met to buy red barrels")
                              quantity += 1
                              running_red_ml += barrel.ml_per_barrel
                              potential_red_potions = running_red_ml//100 # track -> did I already buy enough to make at least ten red (dont over purchase -> save for other colors)
