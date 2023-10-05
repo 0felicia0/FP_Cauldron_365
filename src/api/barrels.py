@@ -119,7 +119,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                  elif "GREEN" in barrel.sku:
                     if green_potions < 10:
                      
-                        while gold_available <= barrel.price and quantity < barrel.quantity and potential_green_potions < 10:
+                        while gold_available >= barrel.price and quantity < barrel.quantity and potential_green_potions < 10:
                              quantity += 1
                              running_green_ml += barrel.ml_per_barrel
                              potential_green_potions = running_green_ml//100
@@ -140,7 +140,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                  elif "BLUE" in barrel.sku:
                     if blue_potions < 10:
                      
-                        while gold_available <= barrel.price and quantity < barrel.quantity and potential_blue_potions < 10:
+                        while gold_available >= barrel.price and quantity < barrel.quantity and potential_blue_potions < 10:
                              quantity += 1
                              running_blue_ml += barrel.ml_per_barrel
                              potential_blue_potions = running_blue_ml//100
