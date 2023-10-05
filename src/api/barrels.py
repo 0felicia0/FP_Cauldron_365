@@ -96,6 +96,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                         print("gold avail: ", gold_available)
                         print("quantity: ", quantity)
                         print("potential red: ", potential_red_potions)
+                        print("barrel price: ", barrel.price)
                         while gold_available <= barrel.price and quantity < barrel.quantity and potential_red_potions < 10:
                              print("conditions met ot buy red barrels")
                              quantity += 1
