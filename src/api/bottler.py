@@ -104,7 +104,7 @@ def get_bottle_plan():
             "quantity": green_bottles, 
          }
 
-         bottles.append(red)
+         bottles.append(green)
 
     if blue_bottles != 0:
          blue = {
