@@ -94,6 +94,7 @@ def get_bottle_plan():
     print("IN BOTTLER - blue potions expected to make: ", blue_bottles)
 
     if red_bottles != 0:
+         print("adding red to bottles list")
          red = {
             "potion_type": [100, 0, 0, 0],
             "quantity": red_bottles, 
