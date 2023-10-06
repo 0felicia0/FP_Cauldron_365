@@ -42,12 +42,15 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             # will probably have to adapt to different potion types (colors)
             for p in potions_delivered:
                 if p.potion_type == [100, 0, 0, 0]:
+                    print("BOTTLER/DELIVER: adding to red")
                     red_potions += p.quantity
                     red_ml -= 100*p.quantity
                 if p.potion_type == [0, 100, 0, 0]:
+                    print("BOTTLER/DELIVER: adding to green")
                     green_potions += p.quantity
                     green_ml -= 100*p.quantity
                 if p.potion_type == [0, 0, 100, 0]:
+                    print("BOTTLER/DELIVER: adding to blue")
                     blue_potions += p.quantity
                     blue_ml -= 100*p.quantity
 
@@ -114,6 +117,8 @@ def get_bottle_plan():
 
          bottles.append(blue)
 
+    print("BOTTLER/PLAN: result of bottling: ")
+    print(bottles)
     return bottles
 
     
