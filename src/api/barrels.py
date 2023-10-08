@@ -158,6 +158,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                          barrels.append(blue)
 
+    print("barrels planning to purchase: ")
+    print(barrels)                     
+
     return barrels # use same approach as catalog (appending to a list)
 
 
