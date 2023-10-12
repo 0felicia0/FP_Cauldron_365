@@ -45,9 +45,9 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
                         potions_to_add += potion.quantity
 
-                        red_ml_used -= potion.red_ml
-                        green_ml_used -= potion.green_ml
-                        blue_ml_used -= potion.blue_ml
+                        red_ml_used -= row.red_ml
+                        green_ml_used -= row.green_ml
+                        blue_ml_used -= row.blue_ml
                         
                         connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :potions_to_add WHERE potion.potion_type = :potion_mix"), {"potions_to_add": potions_to_add, "potion_mix": potion_mix})
 
