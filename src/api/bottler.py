@@ -24,41 +24,25 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     print(potions_delivered)
 
     # process: once potions are delivered, update the database values
-
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
             
-            first_row = result.first()
+            #connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = potions.num_potions - :quantity WHERE potions.red_ml = :potion_type[0] AND potions.green_ml = :potion_type[1] AND potions.blue_ml = :potion_type[2] AND potions.dark = :potion_type[3]"))
 
-            red_potions = first_row.num_red_potions
-            red_ml = first_row.num_red_ml
+            result = connection.execute(sqlalchemy.text("SELECT * FROM potions"))
 
-            green_potions = first_row.num_green_potions
-            green_ml = first_row.num_green_ml
+            # sum of potions calculated with python syntax
+            potions_to_add = 0
 
-            blue_potions = first_row.num_blue_potions
-            blue_ml = first_row.num_blue_ml
+            for potion in potions_delivered:
+               for row in result:
+                    if potion.potion_type == [row.red_ml, row.green_ml, row.blue_ml, row.dark]:
+                        print("current inventory of sku: ", row.sku, "inventory: ", row.num_potions)
 
-            # will probably have to adapt to different potion types (colors)
-            for p in potions_delivered:
-                if p.potion_type == [100, 0, 0, 0]:
-                    print("BOTTLER/DELIVER: adding to red")
-                    red_potions += p.quantity
-                    red_ml -= 100*p.quantity
-                if p.potion_type == [0, 100, 0, 0]:
-                    print("BOTTLER/DELIVER: adding to green")
-                    green_potions += p.quantity
-                    green_ml -= 100*p.quantity
-                if p.potion_type == [0, 0, 100, 0]:
-                    print("BOTTLER/DELIVER: adding to blue")
-                    blue_potions += p.quantity
-                    blue_ml -= 100*p.quantity
+                        potions_to_add += potion.quantity
 
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_potions = :red_potions, num_red_ml = :red_ml, num_green_potions = :green_potions, num_green_ml = :green_ml, num_blue_potions = :blue_potions, num_blue_ml = :blue_ml"), {"red_potions": red_potions, "red_ml": red_ml, "green_potions": green_potions, "green_ml": green_ml, "blue_potions": blue_potions, "blue_ml": blue_ml})
+                        connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :potions_to_add"), {"potions_to_add": potions_to_add})
 
-            print("IN BOTTLER - red potion inventory after delivery: ", red_potions)
-            print("IN BOTTLER - green potion inventory after delivery: ", green_potions)
-            print("IN BOTTLER - blue potion inventory after delivery: ", blue_potions)
+                        print("resulting potion number: sku: ", row.sku, "potions_to_add: ", potions_to_add)
 
     return "OK"
  
@@ -69,54 +53,38 @@ def get_bottle_plan():
     Go from barrel to bottle.
     """
 
-    # Each bottle has a quantity of what proportion of red, blue, and
-    # green potion to add.
-    # Expressed in integers from 1 to 100 that must sum up to 100.
+    bottles = []
 
-    # Initial logic: bottle all barrels into red potions.
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+            global_inventory_result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
 
-            first_row = result.first()
-
+            first_row = global_inventory_result.first()
             red_ml = first_row.num_red_ml
             green_ml = first_row.num_green_ml
             blue_ml = first_row.num_blue_ml
-    
-    bottles = []
-    # every 100ml is a bottle of potion
-    red_bottles = red_ml // 100
-    green_bottles = green_ml // 100
-    blue_bottles = blue_ml // 100
+            
+            potions_result = connection.execute(sqlalchemy.text("SELECT * FROM potions"))
 
-    print("IN BOTTLER - red potions expected to make: ", red_bottles)
-    print("IN BOTTLER - green potions expected to make: ", green_bottles)
-    print("IN BOTTLER - blue potions expected to make: ", blue_bottles)
+            # potential approach, bottle until youve made 5 (initially just to stock all)
+            for potion in potions_result:
+                bottled = 0
 
-    if red_bottles != 0:
-         print("adding red to bottles list")
-         red = {
-            "potion_type": [100, 0, 0, 0],
-            "quantity": red_bottles, 
-         }
+                while(bottled < 5 and red_ml >= potion.red_ml and green_ml >= potion.green_ml and blue_ml >= potion.blue_ml):
+                    bottled += 1
+                    # subtract from available ml in inventory
+                    red_ml -= potion.red_ml
+                    green_ml -= potion.green_ml
+                    blue_ml -= potion.blue_ml
 
-         bottles.append(red)
+                if bottled > 0:
+                    print("adding sku: ", potion.sku, "amount: ", bottled)
+                    bottle = {
+                        "potion_type": [potion.red_ml, potion.green_ml, potion.blue_ml, potion.dark],
+                        "quantity": bottled
+                    }
 
-    if green_bottles != 0:
-         green = {
-            "potion_type": [0, 100, 0, 0],
-            "quantity": green_bottles, 
-         }
+                    bottles.append(bottle)
 
-         bottles.append(green)
-
-    if blue_bottles != 0:
-         blue = {
-            "potion_type": [0, 0, 100, 0],
-            "quantity": blue_bottles, 
-         }
-
-         bottles.append(blue)
 
     print("BOTTLER/PLAN: result of bottling: ")
     print(bottles)
