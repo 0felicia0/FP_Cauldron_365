@@ -31,7 +31,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             result = connection.execute(sqlalchemy.text("SELECT * FROM potions"))
             result_list = list(result)
             # sum of potions calculated with python syntax
-            potions_to_add = 0
+            
 
             red_ml_used = 0
             green_ml_used = 0
@@ -39,7 +39,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
             for potion in potions_delivered:
                 print(potion)
-
+                potions_to_add = 0
                 for row in result_list:
                     red_ml = row.red_ml
                     green_ml = row.green_ml
