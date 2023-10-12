@@ -80,7 +80,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = potions.num_potions - cart_items.quantity FROM cart_items WHERE potions.potion_id = cart_items.potion_id AND cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
     
             # get rows with right cart_id, where potion_id = cart_item.potion_is, sum all the values
-            result = connection.execute(sqlalchemy.text("SELECT SUM(potions.price * cart_items.quantity) AS gold_paid, SUM(cart_items.quatity) AS potions_bought FROM potions JOIN cart_items ON potions.potion_id = cart_items.potion_id WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
+            result = connection.execute(sqlalchemy.text("SELECT SUM(potions.price * cart_items.quantity) AS gold_paid, SUM(cart_items.quantity) AS potions_bought FROM potions JOIN cart_items ON potions.potion_id = cart_items.potion_id WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
 
             first_row = result.first()
 
