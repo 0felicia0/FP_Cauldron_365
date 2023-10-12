@@ -113,7 +113,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                 if "RED" in barrel.sku: # initial amount of ml less that 1000
                     # buy if gold available and until I buy 1000 ml
-                    while red_ml < 1000 and gold_available >= barrel.price:
+                    while red_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
                         red_ml += barrel.ml_per_barrel
                         gold_available -= barrel.price
@@ -129,7 +129,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                 if "GREEN" in barrel.sku:
                     # buy if gold available and until I buy 1000 ml
-                    while green_ml < 1000 and gold_available >= barrel.price:
+                    while green_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
                         green_ml += barrel.ml_per_barrel
                         gold_available -= barrel.price
@@ -144,7 +144,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                 if "BLUE" in barrel.sku:
                     # buy if gold available and until I buy 1000 ml
-                    while blue_ml < 1000 and gold_available >= barrel.price:
+                    while blue_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
                         blue_ml += barrel.ml_per_barrel
                         gold_available -= barrel.price
