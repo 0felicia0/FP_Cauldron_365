@@ -19,19 +19,11 @@ def reset():
     """
 
     with db.engine.begin() as connection:
-            # is this an int that's returned?
-            result = connection.execute(sqlalchemy.text("SELECT * FROM potions"))
+            # is this an int that's returned?                   
+            connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = 0"))
 
-            for row in result:
-                connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = 0"))
-
-            result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory")) 
-
-            first_row = result.first()
             connection.execute(sqlalchemy.text("UPDATE potions SET total_potions = 0, num_red_ml = 0, num_green_ml = 0, num_blue_ml = 0, gold = 100"))       
-            
-                            
-
+                                    
     return "OK"
 
 
