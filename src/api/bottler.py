@@ -33,16 +33,28 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             # sum of potions calculated with python syntax
             potions_to_add = 0
 
+            red_ml_used = 0
+            green_ml_used = 0
+            blue_ml_used = 0
+
             for potion in potions_delivered:
                for row in result:
-                    if potion.potion_type == [row.red_ml, row.green_ml, row.blue_ml, row.dark]:
+                    potion_mix = [row.red_ml, row.green_ml, row.blue_ml, row.dark]
+                    if potion.potion_type == potion_mix:
                         print("current inventory of sku: ", row.sku, "inventory: ", row.num_potions)
 
                         potions_to_add += potion.quantity
 
-                        connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :potions_to_add"), {"potions_to_add": potions_to_add})
+                        red_ml_used -= potion.red_ml
+                        green_ml_used -= potion.green_ml
+                        blue_ml_used -= potion.blue_ml
+                        
+                        connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :potions_to_add WHERE potion.potion_type = :potion_mix"), {"potions_to_add": potions_to_add, "potion_mix": potion_mix})
 
                         print("resulting potion number: sku: ", row.sku, "potions_to_add: ", potions_to_add)
+            
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml - :red_ml_used, num_green_ml = num_green_ml - :green_ml_used, num_blue_ml = num_blue_ml - :blue_ml_used"), {"red_ml_used": red_ml_used, "green_ml_used": green_ml_used, "blue_ml_used": blue_ml_used})
+
 
     return "OK"
  

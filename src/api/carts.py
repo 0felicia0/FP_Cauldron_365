@@ -80,9 +80,11 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     
             # get rows with right cart_id, where potion_id = cart_item.potion_is, sum all the values
             result = connection.execute(sqlalchemy.text("SELECT SUM(potions.price * cart_item.quantity) AS gold_paid, SUM(cart_items.quatity) AS potions_bought FROM potions JOIN cart_items ON potions.potion_id = cart_items.potion_id WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
-    
-            gold_paid = result.gold_paid
-            potions_bought = result.potions_bought
+
+            first_row = result.first()
+
+            gold_paid = first_row.gold_paid
+            potions_bought = first_row.potions_bought
 
             #remove tuple from carts
 
