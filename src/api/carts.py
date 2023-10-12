@@ -87,6 +87,10 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             gold_paid = first_row.gold_paid
             potions_bought = first_row.potions_bought
 
-            #remove tuple from carts
+            # update gold in global_inventory
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = gold + :gold_paid"), {"gold_paid": gold_paid})
+            # remove tuple from carts, and cart_items associated with it
+            connection.execute(sqlalchemy.text("DELETE FROM cart_items WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
+            connection.execute(sqlalchemy.text("DELETE FROM carts WHERE cart_id = :cart_id"), {"cart_id": cart_id})
 
     return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}
