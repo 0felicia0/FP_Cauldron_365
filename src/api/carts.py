@@ -56,7 +56,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """"""
     # change to reflect lecture notes
     with db.engine.begin() as connection:
-            connection.execute(sqlalchemy.text("INSERT INTO cart_items (cart_id, potion_id, quantity) SELECT :cart_id, :quantity, potions.potion_id FROM potions WHERE potions.sku = :item_sku"), {"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku})
+            connection.execute(sqlalchemy.text("INSERT INTO cart_items (cart_id, quantity, potion_id) SELECT :cart_id, :quantity, potions.potion_id FROM potions WHERE potions.sku = :item_sku"), {"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku})
            
     return "OK"
 
