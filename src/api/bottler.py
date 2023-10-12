@@ -42,7 +42,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                     red_ml = row.red_ml
                     green_ml = row.green_ml
                     blue_ml = row.blue_ml
-                    dark = row.dark_ml
+                    dark = row.dark
 
                     row_potion_mix = [red_ml, green_ml, blue_ml, dark]
                     if potion.potion_type == row_potion_mix:
