@@ -28,7 +28,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             
             #connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = potions.num_potions - :quantity WHERE potions.red_ml = :potion_type[0] AND potions.green_ml = :potion_type[1] AND potions.blue_ml = :potion_type[2] AND potions.dark = :potion_type[3]"))
 
-            result = connection.execute(sqlalchemy.text("SELECT * FROM potions"))
+            result = connection.execute(sqlalchemy.text("SELECT * FROM potions ORDER BY num_potions"))
             result_list = list(result)
             # sum of potions calculated with python syntax
 
