@@ -59,33 +59,6 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
         
     return "OK"
 
-            #get original vals
-            # result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory")) # this is unecessary, can calculate and add later
-            # first_row = result.first()
-
-            # gold_available = first_row.gold
-            # red_ml = first_row.num_red_ml
-            # green_ml = first_row.num_green_ml
-            # blue_ml = first_row.num_blue_ml
-
-            # # could use dictionary
-
-            # #update value
-            # for barrel in barrels_delivered:
-            #     if "RED" in barrel.sku:
-            #         red_ml += barrel.ml_per_barrel * barrel.quantity
-            #         gold_available -= barrel.price * barrel.quantity
-            #     elif "GREEN" in barrel.sku:
-            #         green_ml += barrel.ml_per_barrel * barrel.quantity
-            #         gold_available -= barrel.price * barrel.quantity
-            #     elif "BLUE" in barrel.sku:
-            #         blue_ml += barrel.ml_per_barrel * barrel.quantity
-            #         gold_available -= barrel.price * barrel.quantity
-            #     else: 
-            #         raise Exception("Invalid potion")
-
-
-            # red_ml = red_ml + :red_ml
 
 
 # Gets called once a day
@@ -167,33 +140,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     return barrels # use same approach as catalog (appending to a list)
 
-
-
-# OLD CODE FROM A1
-
-            # if (red_potions < 10):
-            #     #buy a barrel based on price and how much gold you have
-            #     for barrel in wholesale_catalog:
-            #             if barrel.sku == "SMALL_RED_BARREL": #github specs say just to buy small red barrel
-            #                 quantity = 0
-            #                 while(gold_available >= barrel.price and quantity < barrel.quantity):
-            #                     barrels_to_purchase += 1
-            #                     quantity += 1
-            #                     gold_available -= barrel.price
-                            
-            #                 # if quantity > 0: add sku to list
-
-
-    
-    
-
-    # return barrels
-    #return [
-        #{
-            #"sku": "SMALL_RED_BARREL", # will probably have to adjust later when we purchase something other than small red barrel
-            #"quantity": barrels_to_purchase,
-       # }
-   # ]     
 
     
 

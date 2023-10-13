@@ -38,30 +38,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
             for potion in potions_delivered:
                 print(potion)
-
                 connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :quantity WHERE red_ml = :red_ml AND green_ml = :green_ml AND blue_ml = :blue_ml AND dark = :dark"), {"quantity": potion.quantity, "red_ml": potion.potion_type[0], "green_ml": potion.potion_type[1], "blue_ml": potion.potion_type[2], "dark": potion.potion_type[3]})
-
-                # potions_to_add = 0
-                # for row in result_list:
-                #     red_ml = row.red_ml
-                #     green_ml = row.green_ml
-                #     blue_ml = row.blue_ml
-                #     dark = row.dark
-
-                #     row_potion_mix = [red_ml, green_ml, blue_ml, dark]
-
-                #     print("potion.potion_type: ", potion.potion_type)
-                #     print("row mix: ", row_potion_mix)
-
-                #     if potion.potion_type == row_potion_mix:
-                #         print("current inventory of sku: ", row.sku, "inventory: ", row.num_potions)
-
-                #         potions_to_add += potion.quantity
-                        
-                #         connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :potions_to_add WHERE red_ml = :red_ml AND green_ml = :green_ml AND blue_ml = :blue_ml AND dark = :dark"), {"potions_to_add": potions_to_add, "potion_type": potion.potion_type, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "dark": dark})
-
-                #         print("resulting potion number: sku: ", row.sku, "potions_to_add: ", potions_to_add)
-
 
             print("red used: ", red_ml_used, " green used: ", green_ml_used, " blue used: ", blue_ml_used, "dark used: ", dark_used)
 
