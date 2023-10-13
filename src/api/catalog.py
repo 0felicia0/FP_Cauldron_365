@@ -27,7 +27,7 @@ def get_catalog():
                 }
 
                 catalog.append(potion)
-            
+    
     return catalog           
 
 

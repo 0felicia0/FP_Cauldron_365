@@ -23,11 +23,12 @@ def get_inventory():
 
             gold = first_row.gold
 
-            result = connection.execute(sqlalchemy.text("SELECT SUM(num_potions) AS total_potions FROM potions"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(num_potions) AS total_potions,  SUM(num_red_ml + num_green_ml + num_blue_ml) AS total_ml FROM potions"))
             first_row = result.first()
             total_potions = first_row.total_potions
+            total_ml = first_row.total_ml
 
-    return {"number_of_potions": total_potions, "gold": gold}
+    return {"number_of_potions": total_potions, "ml_in_barrels":  total_ml, "gold": gold}
 
 class Result(BaseModel):
     gold_match: bool
