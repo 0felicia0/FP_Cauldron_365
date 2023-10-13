@@ -127,7 +127,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                         barrels.append(red)
 
-                if "GREEN" in barrel.sku:
+                elif "GREEN" in barrel.sku:
                     # buy if gold available and until I buy 1000 ml
                     while green_ml < 500 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
@@ -142,7 +142,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                         barrels.append(green)
 
-                if "BLUE" in barrel.sku:
+                elif "BLUE" in barrel.sku:
                     # buy if gold available and until I buy 1000 ml
                     while blue_ml < 500 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
