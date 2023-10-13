@@ -22,7 +22,7 @@ def reset():
             # is this an int that's returned?                   
             connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = 0"))
 
-            connection.execute(sqlalchemy.text("UPDATE potions SET total_potions = 0, num_red_ml = 0, num_green_ml = 0, num_blue_ml = 0, gold = 100"))       
+            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = 0, num_green_ml = 0, num_blue_ml = 0, gold = 100"))       
                                     
     return "OK"
 
