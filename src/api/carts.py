@@ -57,7 +57,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     # change to reflect lecture notes
     with db.engine.begin() as connection:
             connection.execute(sqlalchemy.text("INSERT INTO cart_items (cart_id, quantity, potion_id) SELECT :cart_id, :quantity, potions.potion_id FROM potions WHERE potions.sku = :item_sku"), {"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku})
-           
+    print("adding to cart: ", item_sku, " quantity: ", cart_item.quantity)       
     return "OK"
 
 
@@ -92,5 +92,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             # remove tuple from carts, and cart_items associated with it
             connection.execute(sqlalchemy.text("DELETE FROM cart_items WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
             connection.execute(sqlalchemy.text("DELETE FROM carts WHERE cart_id = :cart_id"), {"cart_id": cart_id})
+
+    print("cart_id: ", cart_id,  " bought: ", potions_bought, " and paid: ", gold_paid)        
 
     return {"total_potions_bought": potions_bought, "total_gold_paid": gold_paid}
