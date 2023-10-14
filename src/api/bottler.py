@@ -26,10 +26,6 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     # process: once potions are delivered, update the database values
     with db.engine.begin() as connection:
             
-            #connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = potions.num_potions - :quantity WHERE potions.red_ml = :potion_type[0] AND potions.green_ml = :potion_type[1] AND potions.blue_ml = :potion_type[2] AND potions.dark = :potion_type[3]"))
-
-            result = connection.execute(sqlalchemy.text("SELECT * FROM potions"))
-            result_list = list(result)
             # sum of potions calculated with python syntax
             red_ml_used = sum(potion.quantity * potion.potion_type[0] for potion in potions_delivered)
             green_ml_used = sum(potion.quantity * potion.potion_type[1] for potion in potions_delivered)

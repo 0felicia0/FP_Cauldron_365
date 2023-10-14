@@ -70,7 +70,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     barrels = [] # list to return
     
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+            result = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml, gold FROM global_inventory"))
             first_row = result.first()
 
             gold_available = first_row.gold
