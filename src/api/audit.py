@@ -23,7 +23,7 @@ def get_inventory():
 
             gold = first_row.gold
 
-            result = connection.execute(sqlalchemy.text("SELECT SUM(num_potions) AS total_potions,  SUM(num_red_ml + num_green_ml + num_blue_ml) AS total_ml FROM potions"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(num_potions) AS total_potions,  SUM(num_red_ml + num_green_ml + num_blue_ml) AS total_ml FROM global_inventory"))
             first_row = result.first()
             total_potions = first_row.total_potions
             total_ml = first_row.total_ml
