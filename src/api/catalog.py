@@ -23,7 +23,7 @@ def get_catalog():
                     "name": row.name,
                     "quantity": row.num_potions,
                     "price": row.price,
-                    "potion_type": [row.red_ml, row.green_ml, row.blue_ml, row.dark],
+                    "potion_type": row.type,
                 }
 
                 catalog.append(potion)

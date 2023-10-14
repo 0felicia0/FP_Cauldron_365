@@ -38,7 +38,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 
             for potion in potions_delivered:
                 print(potion)
-                connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :quantity WHERE red_ml = :red_ml AND green_ml = :green_ml AND blue_ml = :blue_ml AND dark = :dark"), {"quantity": potion.quantity, "red_ml": potion.potion_type[0], "green_ml": potion.potion_type[1], "blue_ml": potion.potion_type[2], "dark": potion.potion_type[3]})
+                connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :quantity WHERE type = :potion_type"), {"quantity": potion.quantity, "potion_type": potion.potion_type})
 
             print("red used: ", red_ml_used, " green used: ", green_ml_used, " blue used: ", blue_ml_used, "dark used: ", dark_used)
 
@@ -57,20 +57,20 @@ def get_bottle_plan():
     bottles = []
 
     with db.engine.begin() as connection:
-            global_inventory_result = connection.execute(sqlalchemy.text("SELECT * FROM global_inventory"))
+            global_inventory_result = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml FROM global_inventory"))
 
             first_row = global_inventory_result.first()
             red_ml = first_row.num_red_ml
             green_ml = first_row.num_green_ml
             blue_ml = first_row.num_blue_ml
             
-            potions_result = connection.execute(sqlalchemy.text("SELECT * FROM potions ORDER BY num_potions"))
+            potions_result = connection.execute(sqlalchemy.text("SELECT type FROM potions ORDER BY num_potions"))
 
             # potential approach, bottle until youve made 5 (initially just to stock all)
             for potion in potions_result:
                 bottled = 0
 
-                while(bottled < 3 and red_ml >= potion.red_ml and green_ml >= potion.green_ml and blue_ml >= potion.blue_ml):
+                while(bottled < 3 and red_ml >= potion.type[0] and green_ml >= potion.type[1] and blue_ml >= potion.type[2]):
                     bottled += 1
                     # subtract from available ml in inventory
                     red_ml -= potion.red_ml
@@ -80,7 +80,7 @@ def get_bottle_plan():
                 if bottled > 0:
                     print("adding sku: ", potion.sku, "amount: ", bottled)
                     bottle = {
-                        "potion_type": [potion.red_ml, potion.green_ml, potion.blue_ml, potion.dark],
+                        "potion_type": potion.type,
                         "quantity": bottled
                     }
 
