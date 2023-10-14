@@ -78,7 +78,7 @@ def get_bottle_plan():
                     blue_ml -= potion.type[2]
 
                 if bottled > 0:
-                    print("adding sku: ", potion.sku, "amount: ", bottled)
+                    #print("adding sku: ", potion.sku, "amount: ", bottled)
                     bottle = {
                         "potion_type": potion.type,
                         "quantity": bottled
