@@ -67,7 +67,7 @@ def get_bottle_plan():
             for potion in potions_result:
                 bottled = 0
 
-                while(bottled < 3 and red_ml >= potion.type[0] and green_ml >= potion.type[1] and blue_ml >= potion.type[2]):
+                while(bottled < 5 and red_ml >= potion.type[0] and green_ml >= potion.type[1] and blue_ml >= potion.type[2]):
                     bottled += 1
                     # subtract from available ml in inventory
                     red_ml -= potion.type[0]
