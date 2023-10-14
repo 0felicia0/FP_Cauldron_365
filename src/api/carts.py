@@ -22,16 +22,6 @@ class CartItem(BaseModel):
 class CartCheckout(BaseModel):
     payment: str
 
-# class Cart:
-#      def __init__(self, cart_identification, customer):
-#         self.customer = customer
-#         self.cart_identification = cart_identification
-#         self.items = []
-
-# class Item:
-#     def __init__(self, sku, quantity):
-#         self.sku = sku
-#         self.quantity = quantity
 
 @router.post("/")
 def create_cart(new_cart: NewCart):
