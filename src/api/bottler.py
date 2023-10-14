@@ -23,20 +23,21 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     """ """
     print(potions_delivered)
 
+    # sum of potions calculated with python syntax
+    red_ml_used = sum(potion.quantity * potion.potion_type[0] for potion in potions_delivered)
+    green_ml_used = sum(potion.quantity * potion.potion_type[1] for potion in potions_delivered)
+    blue_ml_used = sum(potion.quantity * potion.potion_type[2] for potion in potions_delivered)
+    dark_used = sum(potion.quantity * potion.potion_type[3] for potion in potions_delivered)
+
+    print("red used: ", red_ml_used, " green used: ", green_ml_used, " blue used: ", blue_ml_used, "dark used: ", dark_used)
+
     # process: once potions are delivered, update the database values
     with db.engine.begin() as connection:
             
-            # sum of potions calculated with python syntax
-            red_ml_used = sum(potion.quantity * potion.potion_type[0] for potion in potions_delivered)
-            green_ml_used = sum(potion.quantity * potion.potion_type[1] for potion in potions_delivered)
-            blue_ml_used = sum(potion.quantity * potion.potion_type[2] for potion in potions_delivered)
-            dark_used = sum(potion.quantity * potion.potion_type[3] for potion in potions_delivered)
-
             for potion in potions_delivered:
                 print(potion)
                 connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :quantity WHERE type = :potion_type"), {"quantity": potion.quantity, "potion_type": potion.potion_type})
 
-            print("red used: ", red_ml_used, " green used: ", green_ml_used, " blue used: ", blue_ml_used, "dark used: ", dark_used)
 
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml - :red_ml_used, num_green_ml = num_green_ml - :green_ml_used, num_blue_ml = num_blue_ml - :blue_ml_used"), {"red_ml_used": red_ml_used, "green_ml_used": green_ml_used, "blue_ml_used": blue_ml_used})
 
