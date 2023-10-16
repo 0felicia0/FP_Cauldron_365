@@ -84,7 +84,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                 print(barrel)
                 barrels_to_purchase = 0
 
-                if "RED" in barrel.sku: # initial amount of ml less that 1000
+                if barrel.potion_type == [1, 0, 0, 0]: # initial amount of ml less that 1000
                     # buy if gold available and until I buy 1000 ml
                     while red_ml < 500 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
@@ -100,7 +100,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                         barrels.append(red)
 
-                elif "GREEN" in barrel.sku:
+                elif barrel.potion_type == [0, 1, 0, 0]:
                     # buy if gold available and until I buy 1000 ml
                     while green_ml < 500 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
@@ -115,7 +115,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                         barrels.append(green)
 
-                elif "BLUE" in barrel.sku:
+                elif barrel.potion_type == [0, 0, 1, 0]:
                     # buy if gold available and until I buy 1000 ml
                     while blue_ml < 500 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
                         barrels_to_purchase += 1
