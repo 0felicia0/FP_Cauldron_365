@@ -63,7 +63,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             # tripe quote syntax
 
             # insert a transaction, ml_ledger
-            transaction_id = connection.execute(sqlalchemy.text("""INSERT transaction (description) 
+            transaction_id = connection.execute(sqlalchemy.text("""INSERT INTO transaction (description) 
                                                                 VALUES (:description) 
                                                                 RETURNING transaction_id"""), {"description": description}).scalar()
             
