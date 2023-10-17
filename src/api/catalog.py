@@ -27,7 +27,7 @@ def get_catalog():
             result = connection.execute(sqlalchemy.text("""SELECT sku, name, price, type 
                                                         FROM potions 
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
-                                                        GROUP BY potions.id
+                                                        GROUP BY potions.potion_id
                                                         HAVING SUM(potion_ledger.change) > 0"""))
             
             # result = connection.execute(sqlalchemy.text("""SELECT sku, name, num_potions, price, type 
