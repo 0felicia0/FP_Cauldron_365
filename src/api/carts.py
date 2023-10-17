@@ -91,9 +91,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
                                                     INSERT INTO potion_ledger (change, transaction_id, potion_id)
                                                     VALUES (:change, :transaction_id, :potion_id)
                                                     """), {"change": -row.quantity, "transaction_id": transaction_id, "potion_id": row.potion_id})
-            
-            #connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = potions.num_potions - cart_items.quantity FROM cart_items WHERE potions.potion_id = cart_items.potion_id AND cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
-    
+                
             # get rows with right cart_id, where potion_id = cart_item.potion_is, sum all the values
             result = connection.execute(sqlalchemy.text("SELECT SUM(potions.price * cart_items.quantity) AS gold_paid, SUM(cart_items.quantity) AS potions_bought FROM potions JOIN cart_items ON potions.potion_id = cart_items.potion_id WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
 
@@ -107,8 +105,6 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             connection.execute(sqlalchemy.text("""INSERT INTO gold_ledger (change, transaction_id)
                                                 VALUES (:change, :transaction_id)
                                                 """), {"change": gold_paid, "transaction_id": transaction_id})
-            
-            #connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = gold + :gold_paid"), {"gold_paid": gold_paid})
 
             # remove tuple from carts, and cart_items associated with it
             connection.execute(sqlalchemy.text("DELETE FROM cart_items WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})

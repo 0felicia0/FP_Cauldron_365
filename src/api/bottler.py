@@ -61,7 +61,6 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                                     WHERE potions.type = :potion_type
                                                     """), {"change": potion.quantity, "transaction_id": transaction_id, "potion_type": potion.potion_type})
                 
-                #connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :quantity WHERE type = :potion_type"), {"quantity": potion.quantity, "potion_type": potion.potion_type})
             
             connection.execute(sqlalchemy.text("""
                                                 INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change, dark_ml_change)
@@ -73,8 +72,6 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                                  "blue_ml_change": -blue_ml_used,
                                                  "dark_ml_change": -dark_ml_used})
             
-            #connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml - :red_ml_used, num_green_ml = num_green_ml - :green_ml_used, num_blue_ml = num_blue_ml - :blue_ml_used"), {"red_ml_used": red_ml_used, "green_ml_used": green_ml_used, "blue_ml_used": blue_ml_used})
-
     return "OK"
  
 # Gets called 4 times a day
@@ -87,7 +84,6 @@ def get_bottle_plan():
     bottles = []
 
     with db.engine.begin() as connection:
-            #result = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml FROM global_inventory"))
             ml_result = connection.execute(sqlalchemy.text("""
                                                         SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml, SUM(dark_ml_change) AS dark_ml
                                                         FROM ml_ledger
