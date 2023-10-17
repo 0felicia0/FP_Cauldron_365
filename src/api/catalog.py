@@ -13,6 +13,8 @@ def get_catalog():
     """
     catalog = []
 
+    limit = 0
+
     with db.engine.begin() as connection:
             
             # grab all rows with available potions
@@ -33,8 +35,10 @@ def get_catalog():
                       "price": row.price,
                       "potion_type": row.type,
                 }
+                if limit < 6:
+                    catalog.append(potion)
+                    limit += 1
 
-                catalog.append(potion)
     print(catalog)
     return catalog           
 
