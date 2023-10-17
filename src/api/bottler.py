@@ -43,7 +43,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                                                 INSERT INTO transactions (description)
                                                                 VALUES (:description)
                                                                 RETURNING transaction_id
-                                                                """), {"description": description})
+                                                                """), {"description": description}).scalar()
                 
                 connection.execute(sqlalchemy.text("""
                                                     INSERT INTO potion_ledger (change, transaction_id, potion_id)
@@ -60,7 +60,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                                 INSERT INTO transactions (description)
                                                 VALUES (:description)
                                                 RETURNING transaction_id
-                                                """), {"description": description})
+                                                """), {"description": description}).scalar()
             
             connection.execute(sqlalchemy.text("""
                                                     INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change)
