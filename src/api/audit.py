@@ -28,7 +28,7 @@ def get_inventory():
             first_row = result.first()
             total_ml = first_row.total_ml
 
-            result = connection.execute(sqlalchemy.text("SELECT SUM(change) FROM gold_ledger"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(change) AS gold FROM gold_ledger"))
             #result = connection.execute(sqlalchemy.text("SELECT SUM(change) AS gold FROM gold_ledger"))
             first_row = result.first()
             gold = first_row.gold
