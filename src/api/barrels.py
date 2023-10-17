@@ -4,7 +4,7 @@ from src import database as db
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from src.api import auth
-
+from datetime import datetime
 # every 12th tick presents an opportunity to buy a barrel
 
 router = APIRouter(
@@ -44,17 +44,19 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             elif barrel.potion_type == [0, 1, 0, 0]:
                 green_ml += barrel.ml_per_barrel * barrel.quantity
                  
-            elif barrel.potion_type == [0, 0, 0, 1]:
+            elif barrel.potion_type == [0, 0, 1, 0]:
                 blue_ml += barrel.ml_per_barrel * barrel.quantity
                  
             else: 
                 raise Exception("Invalid potion")
             
-    description = "Adding red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml)
+    # time and date stuff
+    today = datetime.now()
+    day_time = today.strftime("%m/%d/%Y %H:%M:%S")
+            
+    description = "Delivering barrels @ " + day_time + " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml)
              
     print(description)
-
-
 
     # update database values?
     with db.engine.begin() as connection:
@@ -90,14 +92,14 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             red_ml = first_row.red_ml
             green_ml = first_row.green_ml
             blue_ml = first_row.blue_ml
-            print("ml - red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
+            print("IN BARRELS PLAN, ml in inventory: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
 
             result = connection.execute(sqlalchemy.text("""SELECT SUM(gold) AS gold
                                                         FROM gold_ledger""")) 
             
             first_row = result.first()
             gold_available = first_row.gold
-            print("gold: ", gold_available)
+            print("IN BARRELS PLAN, gold: ", gold_available)
             
             # logic ideas: if ml < certain amount, try to buy if enough gold
             

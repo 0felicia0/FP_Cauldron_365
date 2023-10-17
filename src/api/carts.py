@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from src.api import auth
 
+from datetime import datetime
+
 router = APIRouter(
     prefix="/carts",
     tags=["cart"],
@@ -64,9 +66,21 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     gold_paid = 0
     potions_bought = 0
 
+    # time and date stuff
+    today = datetime.now()
+    day_time = today.strftime("%m/%d/%Y %H:%M:%S")
+
+    description = "Cart Checkout @ " + day_time + " cart_id: " + cart_id + " payment: " + cart_checkout.payment
+
     with db.engine.begin() as connection:
             # objectives: subtract items in the cart from inventory, add gold
+            transaction_id = connection.execute(sqlalchemy.text("""
+                                                                INSERT INTO transactions (description)
+                                                                VALUES (:description)
+                                                                RETURNING transaction_id
+                                                                """), {"description": description}).scalar()
             
+            # change to insert into ledger log
             connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = potions.num_potions - cart_items.quantity FROM cart_items WHERE potions.potion_id = cart_items.potion_id AND cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
     
             # get rows with right cart_id, where potion_id = cart_item.potion_is, sum all the values
@@ -78,7 +92,9 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
             potions_bought = first_row.potions_bought
 
             # update gold in global_inventory
+            # change to insert into gold ledger log
             connection.execute(sqlalchemy.text("UPDATE global_inventory SET gold = gold + :gold_paid"), {"gold_paid": gold_paid})
+
             # remove tuple from carts, and cart_items associated with it
             connection.execute(sqlalchemy.text("DELETE FROM cart_items WHERE cart_items.cart_id = :cart_id"), {"cart_id": cart_id})
             connection.execute(sqlalchemy.text("DELETE FROM carts WHERE cart_id = :cart_id"), {"cart_id": cart_id})

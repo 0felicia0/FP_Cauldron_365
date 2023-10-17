@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends
 from enum import Enum
 from pydantic import BaseModel
 from src.api import auth
+from datetime import date
+from datetime import datetime
 
 # every alternate tick provides an opportunity to make potions
 
@@ -27,24 +29,31 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     red_ml_used = sum(potion.quantity * potion.potion_type[0] for potion in potions_delivered)
     green_ml_used = sum(potion.quantity * potion.potion_type[1] for potion in potions_delivered)
     blue_ml_used = sum(potion.quantity * potion.potion_type[2] for potion in potions_delivered)
-    dark_used = sum(potion.quantity * potion.potion_type[3] for potion in potions_delivered)
+    dark_ml_used = sum(potion.quantity * potion.potion_type[3] for potion in potions_delivered)
 
-    print("red used: ", red_ml_used, " green used: ", green_ml_used, " blue used: ", blue_ml_used, "dark used: ", dark_used)
+    print("red used: ", red_ml_used, " green used: ", green_ml_used, " blue used: ", blue_ml_used, "dark used: ", dark_ml_used)
 
     
     # process: once potions are delivered, update the database values
+    # think about how you want to read the transaction logs and work from there
+
+    # time and date stuff
+    today = datetime.now()
+    day_time = today.strftime("%m/%d/%Y %H:%M:%S")
+
+    description = "Delivering potions @ " + day_time
+
     with db.engine.begin() as connection:
-            for potion in potions_delivered:
-                print(potion)
-
-                description = "Adding potion: " + str(potion.potion_type) + " quantity: " + str(potion.quantity)
-
-                transaction_id = connection.execute(sqlalchemy.text("""
+            
+            transaction_id = connection.execute(sqlalchemy.text("""
                                                                 INSERT INTO transactions (description)
                                                                 VALUES (:description)
                                                                 RETURNING transaction_id
-                                                                """), {"description": description}).scalar()
-                
+                                                                """), {"description": description}).scalar()            
+
+            for potion in potions_delivered:
+                print(potion)
+
                 connection.execute(sqlalchemy.text("""
                                                     INSERT INTO potion_ledger (change, transaction_id, potion_id)
                                                     SELECT :change, :transaction_id, potion_id 
@@ -53,22 +62,18 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
                                                     """), {"change": potion.quantity, "transaction_id": transaction_id, "potion_type": potion.potion_type})
                 
                 #connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = num_potions + :quantity WHERE type = :potion_type"), {"quantity": potion.quantity, "potion_type": potion.potion_type})
-
-            description = "Subtraction ml after bottling: red: " + str(red_ml_used) + " green: " + str(green_ml_used) + " blue: " + str(blue_ml_used)
-
-            transaction_id = connection.execute(sqlalchemy.text("""
-                                                INSERT INTO transactions (description)
-                                                VALUES (:description)
-                                                RETURNING transaction_id
-                                                """), {"description": description}).scalar()
             
             connection.execute(sqlalchemy.text("""
-                                                    INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change)
-                                                    VALUES (:transaction_id, :red_ml_change, :green_ml_change, :blue_ml_change)
-                                                    """), {"transaction_id": transaction_id, "red_ml_change": -red_ml_used, "green_ml_change": -green_ml_used, "blue_ml_change": -blue_ml_used})
+                                                INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change, dark_ml_change)
+                                                VALUES (:transaction_id, :red_ml_change, :green_ml_change, :blue_ml_change, :dark_ml_change)
+                                                """), 
+                                                {"transaction_id": transaction_id, 
+                                                 "red_ml_change": -red_ml_used, 
+                                                 "green_ml_change": -green_ml_used, 
+                                                 "blue_ml_change": -blue_ml_used,
+                                                 "dark_ml_change": -dark_ml_used})
             
             #connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml - :red_ml_used, num_green_ml = num_green_ml - :green_ml_used, num_blue_ml = num_blue_ml - :blue_ml_used"), {"red_ml_used": red_ml_used, "green_ml_used": green_ml_used, "blue_ml_used": blue_ml_used})
-
 
     return "OK"
  
@@ -84,7 +89,7 @@ def get_bottle_plan():
     with db.engine.begin() as connection:
             #result = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml FROM global_inventory"))
             ml_result = connection.execute(sqlalchemy.text("""
-                                                        SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml
+                                                        SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml, SUM(dark_ml_change) AS dark_ml
                                                         FROM ml_ledger
                                                         """))
 
@@ -92,6 +97,7 @@ def get_bottle_plan():
             red_ml = first_row.red_ml
             green_ml = first_row.green_ml
             blue_ml = first_row.blue_ml
+            dark_ml = first_row.dark_ml
             
             potions_result = connection.execute(sqlalchemy.text("SELECT type FROM potions"))
 
@@ -99,12 +105,13 @@ def get_bottle_plan():
             for potion in potions_result:
                 bottled = 0
 
-                while(bottled < 5 and red_ml >= potion.type[0] and green_ml >= potion.type[1] and blue_ml >= potion.type[2]):
+                while(bottled < 5 and red_ml >= potion.type[0] and green_ml >= potion.type[1] and blue_ml >= potion.type[2] and dark_ml >= potion.type[3]):
                     bottled += 1
                     # subtract from available ml in inventory
                     red_ml -= potion.type[0]
                     green_ml -= potion.type[1]
                     blue_ml -= potion.type[2]
+                    dark_ml -= potion.type[3]
 
                 if bottled > 0:
                     #print("adding sku: ", potion.sku, "amount: ", bottled)
