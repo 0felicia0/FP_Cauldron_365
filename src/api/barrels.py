@@ -94,7 +94,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             blue_ml = first_row.blue_ml
             print("IN BARRELS PLAN, ml in inventory: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
 
-            result = connection.execute(sqlalchemy.text("""SELECT SUM(gold) AS gold
+            result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS gold
                                                         FROM gold_ledger""")) 
             
             first_row = result.first()
