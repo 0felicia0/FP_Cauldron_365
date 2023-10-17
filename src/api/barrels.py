@@ -61,11 +61,14 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             # tripe quote syntax
 
             # insert a transaction, ml_ledger
-            #transaction_id = connection.execute(sqlalchemy.text("INSERT transaction (description) VALUES (:description) RETURNING transaction_id"), {"description": description})
+            transaction_id = connection.execute(sqlalchemy.text("""INSERT transaction (description) 
+                                                                VALUES (:description) 
+                                                                RETURNING transaction_id"""), {"description": description}).scalar()
             
-            #connection.execute(sqlalchemy.text("INSERT ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) VALUES (:transaction_id, :red_ml, :green_ml, :blue_ml)"), {"transaction_id": transaction_id, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml})
+            connection.execute(sqlalchemy.text("""INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) 
+                                               VALUES (:transaction_id, :red_ml, :green_ml, :blue_ml)"""), {"transaction_id": transaction_id, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml})
 
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml + :red_ml, num_green_ml = num_green_ml + :green_ml, num_blue_ml = num_blue_ml + :blue_ml, gold = gold - :gold"), {"red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "gold": gold})
+            #connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml + :red_ml, num_green_ml = num_green_ml + :green_ml, num_blue_ml = num_blue_ml + :blue_ml, gold = gold - :gold"), {"red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "gold": gold})
         
     return "OK"
 
@@ -80,13 +83,21 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     barrels = [] # list to return
     
     with db.engine.begin() as connection:
-            result = connection.execute(sqlalchemy.text("SELECT num_red_ml, num_green_ml, num_blue_ml, gold FROM global_inventory"))
+            result = connection.execute(sqlalchemy.text("""SELECT SUM(num_red_ml) AS red_ml, SUM(num_green_ml) AS green_ml, SUM(num_blue_ml) AS blue_ml 
+                                                        FROM ml_ledger"""))
             first_row = result.first()
 
+            red_ml = first_row.red_ml
+            green_ml = first_row.green_ml
+            blue_ml = first_row.blue_ml
+            print("ml - red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
+
+            result = connection.execute(sqlalchemy.text("""SELECT SUM(gold) AS gold
+                                                        FROM gold_ledger""")) 
+            
+            first_row = result.first()
             gold_available = first_row.gold
-            red_ml = first_row.num_red_ml
-            green_ml = first_row.num_green_ml
-            blue_ml = first_row.num_blue_ml
+            print("gold: ", gold_available)
             
             # logic ideas: if ml < certain amount, try to buy if enough gold
             
