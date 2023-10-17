@@ -70,9 +70,14 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             connection.execute(sqlalchemy.text("""INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) 
                                                VALUES (:transaction_id, :red_ml, :green_ml, :blue_ml)"""), {"transaction_id": transaction_id, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml})
 
+
+            connection.execute(sqlalchemy.text("""
+                                                INSERT INTO gold_ledger (change)
+                                                VALUES (:gold)
+                                                 """), {"gold": -gold})
             #connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml + :red_ml, num_green_ml = num_green_ml + :green_ml, num_blue_ml = num_blue_ml + :blue_ml, gold = gold - :gold"), {"red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "gold": gold})
         
-    return "OK"
+    return "OK" 
 
 
 
