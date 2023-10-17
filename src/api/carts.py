@@ -66,7 +66,7 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     today = datetime.now()
     day_time = today.strftime("%m/%d/%Y %H:%M:%S")
 
-    description = "Cart Checkout @ " + day_time + " cart_id: " + cart_id + " payment: " + cart_checkout.payment
+    description = "Cart Checkout @ " + day_time + " cart_id: " + str(cart_id) + " payment: " + cart_checkout.payment
 
     with db.engine.begin() as connection:
             # objectives: subtract items in the cart from inventory, add gold
