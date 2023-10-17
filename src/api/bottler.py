@@ -37,7 +37,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
             for potion in potions_delivered:
                 print(potion)
 
-                description = "Adding potion: " + potion.potion_type + " quantity: " + potion.quantity
+                description = "Adding potion: " + str(potion.potion_type) + " quantity: " + str(potion.quantity)
 
                 transaction_id = connection.execute(sqlalchemy.text("""
                                                                 INSERT INTO transactions (description)
