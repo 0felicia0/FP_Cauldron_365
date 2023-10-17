@@ -49,13 +49,23 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                  
             else: 
                 raise Exception("Invalid potion")
+            
+    description = "Adding red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml)
              
-    print("red_ml: ", red_ml, "green_ml: ", green_ml, "blue_ml: ", blue_ml)
+    print(description)
+
+
 
     # update database values?
     with db.engine.begin() as connection:
             # tripe quote syntax
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml + :red_ml, num_green_ml = num_green_ml + :green_ml, num_blue_ml = num_blue_ml + :blue_ml, gold = gold - :gold"), {"red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "gold": gold})
+
+            # insert a transaction, ml_ledger
+            transaction_id = connection.execute(sqlalchemy.text("INSERT transaction (description) VALUES (:description) RETURNING transaction_id"), {"description": description})
+            
+            connection.execute(sqlalchemy.text("INSERT ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) VALUES (:transaction_id, :red_ml, :green_ml, :blue_ml)"), {"transaction_id": transaction_id, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml})
+
+            #connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = num_red_ml + :red_ml, num_green_ml = num_green_ml + :green_ml, num_blue_ml = num_blue_ml + :blue_ml, gold = gold - :gold"), {"red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "gold": gold})
         
     return "OK"
 

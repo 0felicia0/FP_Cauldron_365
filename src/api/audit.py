@@ -18,15 +18,18 @@ def get_inventory():
     with db.engine.begin() as connection:
             # is this an int that's returned?
 
-            result = connection.execute(sqlalchemy.text("SELECT SUM(num_potions) AS total_potions FROM potions"))
+            #result = connection.execute(sqlalchemy.text("SELECT SUM(num_potions) AS total_potions FROM potions"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(change) AS total_potions FROM potion_ledger"))
             first_row = result.first()
             total_potions = first_row.total_potions
 
-            result = connection.execute(sqlalchemy.text("SELECT SUM(num_red_ml + num_green_ml + num_blue_ml) AS total_ml FROM global_inventory"))
+            #result = connection.execute(sqlalchemy.text("SELECT SUM(num_red_ml + num_green_ml + num_blue_ml) AS total_ml FROM global_inventory"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(red_ml_change, green_ml_change, blue_ml_change) AS total_ml FROM ml_ledger"))
             first_row = result.first()
             total_ml = first_row.total_ml
 
-            result = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
+            #result = connection.execute(sqlalchemy.text("SELECT gold FROM global_inventory"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(change) AS gold FROM gold_ledger"))
             first_row = result.first()
             gold = first_row.gold
 
