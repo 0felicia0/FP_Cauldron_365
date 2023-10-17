@@ -19,13 +19,15 @@ def reset():
     """
 
     with db.engine.begin() as connection:
-            # is this an int that's returned?                   
-            connection.execute(sqlalchemy.text("UPDATE potions SET num_potions = 0"))
-
-            connection.execute(sqlalchemy.text("UPDATE global_inventory SET num_red_ml = 0, num_green_ml = 0, num_blue_ml = 0, gold = 100"))       
-            
+            # reset ledgers and transaction             
+            connection.execute(sqlalchemy.text("TRUNCATE potion_ledger"))
+            connection.execute(sqlalchemy.text("TRUNCATE gold_ledger"))
+            connection.execute(sqlalchemy.text("TRUNCATE ml_ledger"))
+            connection.execute(sqlalchemy.text("TRUNCATE transactions"))
             # reset carts and cart_items too
             connection.execute(sqlalchemy.text("TRUNCATE carts CASCADE"))
+
+            connection.execute(sqlalchemy.text("INSERT INTO gold_ledger (change) VALUES (100)"))       
             
     return "OK"
 
