@@ -33,7 +33,7 @@ def get_catalog():
                 potion = {
                       "sku": row.sku,
                       "name": row.name,
-                      "quantity": row.num_potions,
+                      "quantity": row.quantity,
                       "price": row.price,
                       "potion_type": row.type,
                 }
