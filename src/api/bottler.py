@@ -89,9 +89,9 @@ def get_bottle_plan():
             
             # get potions' quantities and types
             result = connection.execute(sqlalchemy.text("""
-                                                        SELECT potion.type, SUM(potion_ledger.change) AS quantity
+                                                        SELECT potions.type, SUM(potion_ledger.change) AS quantity
                                                         FROM potions
-                                                        JOIN potion_ledger ON potion.potion_id = potion_ledger.potion_id
+                                                        JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
                                                         GROUP BY potion.type
                                                         """))
             
