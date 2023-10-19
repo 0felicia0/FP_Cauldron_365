@@ -80,8 +80,9 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 def get_bottle_plan():
     """
     Go from barrel to bottle.
-    DONT BOTTLE MORE THAN 300 FOR INVENTORY!!!!
+    
     """
+    #DONT BOTTLE MORE THAN 300 FOR INVENTORY!!!!
 
     bottles = []
 
@@ -93,10 +94,14 @@ def get_bottle_plan():
                                                         FROM potions
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
                                                         GROUP BY potion.type
-                                                        """))
+                                                        """))       
             
             potions = result.fetchall()
             potion_types = len(potions)
+
+            result = connection.execute(sqlalchemy.text("SELECT SUM(change) AS total_potions FROM potion_ledger"))
+            first_row = result.first()
+            total_potions = first_row.total_potions
 
             print("potion types: ", potion_types)
             
@@ -123,12 +128,14 @@ def get_bottle_plan():
             for potion in potions:
                 print(potion)
                 bottled = 0
-                while (bottled < bottles_per_type and potion.type[0] <= red_ml and potion.type[1] <= green_ml and potion.type[2] <= blue_ml and potion.type[3] <= dark_ml):
+                while (total_potions < 300 and bottled < bottles_per_type and potion.type[0] <= red_ml and potion.type[1] <= green_ml and potion.type[2] <= blue_ml and potion.type[3] <= dark_ml):
                     red_ml -= potion.type[0]
                     green_ml -= potion.type[1]
                     blue_ml -= potion.type[2]
                     dark_ml -= potion.type[3]
                     bottled += 1
+
+                    total_potions += 1
                 
                 if bottled > 0:
                      bottle = {
