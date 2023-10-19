@@ -93,7 +93,7 @@ def get_bottle_plan():
                                                         SELECT potions.type, SUM(potion_ledger.change) AS quantity
                                                         FROM potions
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
-                                                        GROUP BY potion.type
+                                                        GROUP BY potions.type
                                                         """))       
             
             potions = result.fetchall()
