@@ -8,6 +8,7 @@ from src.api import auth
 from datetime import date
 from datetime import datetime
 
+
 # every alternate tick provides an opportunity to make potions
 
 router = APIRouter(
@@ -38,7 +39,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     # think about how you want to read the transaction logs and work from there
 
     # time and date stuff
-    today = datetime.now()
+    today = datetime.utcnow()
     day_time = today.strftime("%m/%d/%Y %H:%M:%S")
 
     description = "Delivering potions @ " + day_time
@@ -79,46 +80,64 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
 def get_bottle_plan():
     """
     Go from barrel to bottle.
+    DONT BOTTLE MORE THAN 300 FOR INVENTORY!!!!
     """
 
     bottles = []
 
     with db.engine.begin() as connection:
-            ml_result = connection.execute(sqlalchemy.text("""
-                                                        SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml, SUM(dark_ml_change) AS dark_ml
-                                                        FROM ml_ledger
-                                                        """))
-
-            first_row = ml_result.first()
-            red_ml = first_row.red_ml
-            green_ml = first_row.green_ml
-            blue_ml = first_row.blue_ml
-            dark_ml = first_row.dark_ml
             
-            potions_result = connection.execute(sqlalchemy.text("SELECT type FROM potions"))
+            # get potions' quantities and types
+            result = connection.execute(sqlalchemy.text("""
+                                                        SELECT potion.type, SUM(potion_ledger.change) AS quantity
+                                                        FROM potions
+                                                        JOIN potion_ledger ON potion.potion_id = potion_ledger.potion_id
+                                                        GROUP BY potion.type
+                                                        """))
+            
+            potions = result.fetchall()
+            potion_types = len(potions)
 
-            # potential approach, bottle until youve made 5 (initially just to stock all)
-            for potion in potions_result:
+            print("potion types: ", potion_types)
+            
+            # get available ml
+            ml = connection.execute(sqlalchemy.text("""
+                                                    SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml, SUM(dark_ml_change) AS dark_ml
+                                                    FROM ml_ledger
+                                                    """))
+            
+            ml = ml.first()
+            red_ml = ml.red_ml
+            green_ml = ml.green_ml
+            blue_ml = ml.blue_ml
+            dark_ml = ml.dark_ml
+
+            print("in bottler, available mL: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml, " dark: ", dark_ml)
+            
+            max_bottles = (red_ml + green_ml + blue_ml + dark_ml) // 100
+            
+            bottles_per_type = max_bottles//potion_types
+
+            print("max bottles: ", max_bottles," bottles per type: ", bottles_per_type)
+            
+            for potion in potions:
+                print(potion)
                 bottled = 0
-
-                while(bottled < 10 and red_ml >= potion.type[0] and green_ml >= potion.type[1] and blue_ml >= potion.type[2] and dark_ml >= potion.type[3]):
-                    bottled += 1
-                    # subtract from available ml in inventory
+                while (bottled < bottles_per_type and potion.type[0] <= red_ml and potion.type[1] <= green_ml and potion.type[2] <= blue_ml and potion.type[3] <= dark_ml):
                     red_ml -= potion.type[0]
                     green_ml -= potion.type[1]
                     blue_ml -= potion.type[2]
                     dark_ml -= potion.type[3]
-
+                    bottled += 1
+                
                 if bottled > 0:
-                    #print("adding sku: ", potion.sku, "amount: ", bottled)
-                    bottle = {
-                        "potion_type": potion.type,
-                        "quantity": bottled
-                    }
+                     bottle = {
+                          "potion_type": potion.type,
+                          "quantity": bottled
+                     }
 
-                    bottles.append(bottle)
-
-
+                     bottles.append(bottle)                
+            
     print("BOTTLER/PLAN: result of bottling: ")
     print(bottles)
     return bottles
