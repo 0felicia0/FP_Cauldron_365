@@ -123,15 +123,18 @@ def get_bottle_plan():
             
             bottles_per_type = max_bottles//potion_types
 
-            print("max bottles: ", max_bottles," bottles per type: ", bottles_per_type)
+            
 
-            if bottles_per_type == 0 and total_ml >= 100:
-                bottles_per_type == 5
+            if bottles_per_type == 0 and max_bottles > 0:
+                bottles_per_type == max_bottles
+
+            print("max bottles: ", max_bottles," bottles per type: ", bottles_per_type)
             
             for potion in potions:
                 print(potion)
                 bottled = 0
                 while (total_potions < 300 and bottled < bottles_per_type and potion.type[0] <= red_ml and potion.type[1] <= green_ml and potion.type[2] <= blue_ml and potion.type[3] <= dark_ml):
+                    
                     red_ml -= potion.type[0]
                     green_ml -= potion.type[1]
                     blue_ml -= potion.type[2]
