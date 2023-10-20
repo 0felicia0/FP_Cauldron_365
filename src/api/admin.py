@@ -19,11 +19,12 @@ def reset():
     """
 
     with db.engine.begin() as connection:
-            # reset ledgers and transaction             
-            connection.execute(sqlalchemy.text("TRUNCATE potion_ledger"))
-            connection.execute(sqlalchemy.text("TRUNCATE gold_ledger"))
-            connection.execute(sqlalchemy.text("TRUNCATE ml_ledger"))
-            connection.execute(sqlalchemy.text("TRUNCATE transactions"))
+            # reset ledgers and transaction  
+            connection.execute(sqlalchemy.text("TRUNCATE transactions CASCADE"))           
+            # connection.execute(sqlalchemy.text("TRUNCATE potion_ledger"))
+            # connection.execute(sqlalchemy.text("TRUNCATE gold_ledger"))
+            # connection.execute(sqlalchemy.text("TRUNCATE ml_ledger"))
+            
             # reset carts and cart_items too
             connection.execute(sqlalchemy.text("TRUNCATE carts CASCADE"))
 
