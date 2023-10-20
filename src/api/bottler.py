@@ -118,14 +118,14 @@ def get_bottle_plan():
             dark_ml = ml.dark_ml
 
             print("in bottler, available mL: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml, " dark: ", dark_ml)
-            
-            max_bottles = (red_ml + green_ml + blue_ml + dark_ml) // 100
+            total_ml = red_ml + green_ml + blue_ml + dark_ml
+            max_bottles = (total_ml) // 100
             
             bottles_per_type = max_bottles//potion_types
 
             print("max bottles: ", max_bottles," bottles per type: ", bottles_per_type)
 
-            if bottles_per_type == 0:
+            if bottles_per_type == 0 and total_ml >= 100:
                 bottles_per_type == 5
             
             for potion in potions:
