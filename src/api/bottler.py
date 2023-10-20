@@ -94,7 +94,6 @@ def get_bottle_plan():
                                                         FROM potions
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
                                                         GROUP BY potions.type
-                                                        ORDER BY potions.potion_id
                                                         """))       
             
             potions = result.fetchall()
@@ -123,8 +122,6 @@ def get_bottle_plan():
             max_bottles = (total_ml) // 100
             
             bottles_per_type = max_bottles//potion_types
-
-            
 
             if bottles_per_type == 0 and max_bottles > 0:
                 bottles_per_type = max_bottles

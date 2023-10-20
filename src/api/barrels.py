@@ -167,6 +167,10 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     return barrels # use same approach as catalog (appending to a list)
 
+                 
+
+    
+
 
     
 
