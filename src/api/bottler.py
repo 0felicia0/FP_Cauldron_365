@@ -126,7 +126,7 @@ def get_bottle_plan():
             
 
             if bottles_per_type == 0 and max_bottles > 0:
-                bottles_per_type == max_bottles
+                bottles_per_type = max_bottles
 
             print("max bottles: ", max_bottles," bottles per type: ", bottles_per_type)
             
