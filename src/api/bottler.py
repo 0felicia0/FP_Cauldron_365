@@ -124,6 +124,9 @@ def get_bottle_plan():
             bottles_per_type = max_bottles//potion_types
 
             print("max bottles: ", max_bottles," bottles per type: ", bottles_per_type)
+
+            if bottles_per_type == 0:
+                bottles_per_type == 5
             
             for potion in potions:
                 print(potion)
