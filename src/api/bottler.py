@@ -137,6 +137,8 @@ def get_bottle_plan():
             for potion in potions:
                 print(potion)
                 bottled = 0
+
+                #if potion.type != [0, 50, 50, 0]:
                 while (total_potions < 300 and bottled < bottles_per_type and potion.type[0] <= red_ml and potion.type[1] <= green_ml and potion.type[2] <= blue_ml and potion.type[3] <= dark_ml):
                     
                     red_ml -= potion.type[0]

@@ -86,8 +86,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     """ """
     print(wholesale_catalog)
 
-    barrels = [] # list to return
-    
+    # potential plan: if 300 in inventory already, dont buy
     with db.engine.begin() as connection:
             result = connection.execute(sqlalchemy.text("""SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml 
                                                         FROM ml_ledger"""))
@@ -97,68 +96,72 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             green_ml = first_row.green_ml
             blue_ml = first_row.blue_ml
             print("IN BARRELS PLAN, ml in inventory: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
-
+    
+    with db.engine.begin() as connection:
             result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS gold
                                                         FROM gold_ledger""")) 
             
             first_row = result.first()
             gold_available = first_row.gold
             print("IN BARRELS PLAN, gold: ", gold_available)
+
+    with db.engine.begin() as connection:
+            result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS total_potions
+                                                        FROM potion_ledger""")) 
             
-            # logic ideas: if ml < certain amount, try to buy if enough gold
-            
-            for barrel in wholesale_catalog:
-                print(barrel)
-                barrels_to_purchase = 0
+            first_row = result.first()
+            total_potions = first_row.total_potions
+            print("IN BARRELS PLAN, potions in inventory: ", total_potions) 
 
-                if barrel.potion_type == [1, 0, 0, 0]: # initial amount of ml less that 1000
-                    # buy if gold available and until I buy 1000 ml
-                    while red_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
-                        barrels_to_purchase += 1
-                        red_ml += barrel.ml_per_barrel
-                        gold_available -= barrel.price
-            
+    barrels = [] # list to return
 
-                    if barrels_to_purchase > 0:
-                        red = {
-                            "sku": barrel.sku,
-                            "quantity": barrels_to_purchase
-                        }
+    potions_to_make = 300 - total_potions
 
-                        barrels.append(red)
+    ml_to_buy = potions_to_make * 100
 
-                elif barrel.potion_type == [0, 1, 0, 0]:
-                    # buy if gold available and until I buy 1000 ml
-                    while green_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
-                        barrels_to_purchase += 1
-                        green_ml += barrel.ml_per_barrel
-                        gold_available -= barrel.price
-            
-                    if barrels_to_purchase > 0:
-                        green = {
-                            "sku": barrel.sku,
-                            "quantity": barrels_to_purchase
-                        }
+    red_to_buy = ml_to_buy // 3
+    green_to_buy = ml_to_buy // 3
+    blue_to_buy = ml_to_buy // 3
 
-                        barrels.append(green)
+    print("potions to make: ", potions_to_make, " ml_to_buy: ", ml_to_buy, " ml_per_color: ", red_to_buy)
 
-                elif barrel.potion_type == [0, 0, 1, 0]:
-                    # buy if gold available and until I buy 1000 ml
-                    while blue_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
-                        barrels_to_purchase += 1
-                        blue_ml += barrel.ml_per_barrel
-                        gold_available -= barrel.price
-   
+    if total_potions < 300:
+        for barrel in wholesale_catalog:
+            print(barrel)
+            barrels_to_purchase = 0
 
-                    if barrels_to_purchase > 0:
-                        blue = {
-                            "sku": barrel.sku,
-                            "quantity": barrels_to_purchase
-                        }
+            if barrel.potion_type == [1, 0, 0, 0]: # initial amount of ml less that 1000
+                # buy if gold available and until I buy 1000 ml
+                while red_to_buy > 0 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
+                    barrels_to_purchase += 1
+                    #red_ml += barrel.ml_per_barrel
+                    gold_available -= barrel.price
+                    red_to_buy -= barrel.ml_per_barrel
 
-                        barrels.append(blue)
+            elif barrel.potion_type == [0, 1, 0, 0]:
+                # buy if gold available and until I buy 1000 ml
+                while green_to_buy > 0 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
+                    barrels_to_purchase += 1
+                    #green_ml += barrel.ml_per_barrel
+                    gold_available -= barrel.price
+                    green_to_buy -= barrel.ml_per_barrel
 
-                 
+            elif barrel.potion_type == [0, 0, 1, 0]:
+                # buy if gold available and until I buy 1000 ml
+                while blue_to_buy > 0 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
+                    barrels_to_purchase += 1
+                    #blue_ml += barrel.ml_per_barrel
+                    gold_available -= barrel.price
+                    blue_to_buy -= barrel.ml_per_barrel
+
+
+            if barrels_to_purchase > 0:
+                barrel = {
+                    "sku": barrel.sku,
+                    "quantity": barrels_to_purchase
+                }
+
+                barrels.append(barrel) 
 
     print("barrels planning to purchase: ")
     print(barrels)
@@ -169,7 +172,76 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
                  
 
-    
+ # with db.engine.begin() as connection:
+    #         result = connection.execute(sqlalchemy.text("""SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml 
+    #                                                     FROM ml_ledger"""))
+    #         first_row = result.first()
+
+    #         red_ml = first_row.red_ml
+    #         green_ml = first_row.green_ml
+    #         blue_ml = first_row.blue_ml
+    #         print("IN BARRELS PLAN, ml in inventory: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
+
+    #         result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS gold
+    #                                                     FROM gold_ledger""")) 
+            
+    #         first_row = result.first()
+    #         gold_available = first_row.gold
+    #         print("IN BARRELS PLAN, gold: ", gold_available)
+            
+    #         # logic ideas: if ml < certain amount, try to buy if enough gold
+            
+    #         for barrel in wholesale_catalog:
+    #             print(barrel)
+    #             barrels_to_purchase = 0
+
+    #             if barrel.potion_type == [1, 0, 0, 0]: # initial amount of ml less that 1000
+    #                 # buy if gold available and until I buy 1000 ml
+    #                 while red_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
+    #                     barrels_to_purchase += 1
+    #                     red_ml += barrel.ml_per_barrel
+    #                     gold_available -= barrel.price
+            
+
+    #                 if barrels_to_purchase > 0:
+    #                     red = {
+    #                         "sku": barrel.sku,
+    #                         "quantity": barrels_to_purchase
+    #                     }
+
+    #                     barrels.append(red)
+
+    #             elif barrel.potion_type == [0, 1, 0, 0]:
+    #                 # buy if gold available and until I buy 1000 ml
+    #                 while green_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
+    #                     barrels_to_purchase += 1
+    #                     green_ml += barrel.ml_per_barrel
+    #                     gold_available -= barrel.price
+            
+    #                 if barrels_to_purchase > 0:
+    #                     green = {
+    #                         "sku": barrel.sku,
+    #                         "quantity": barrels_to_purchase
+    #                     }
+
+    #                     barrels.append(green)
+
+    #             elif barrel.potion_type == [0, 0, 1, 0]:
+    #                 # buy if gold available and until I buy 1000 ml
+    #                 while blue_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
+    #                     barrels_to_purchase += 1
+    #                     blue_ml += barrel.ml_per_barrel
+    #                     gold_available -= barrel.price
+   
+
+    #                 if barrels_to_purchase > 0:
+    #                     blue = {
+    #                         "sku": barrel.sku,
+    #                         "quantity": barrels_to_purchase
+    #                     }
+
+    #                     barrels.append(blue)
+
 
 
     
