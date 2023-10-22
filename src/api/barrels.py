@@ -115,7 +115,11 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     barrels = [] # list to return
 
-    potions_to_make = 300 - total_potions
+    total_ml = red_ml + green_ml + blue_ml
+
+    potential_potions = total_ml // 100
+
+    potions_to_make = 300 - total_potions - potential_potions
 
     ml_to_buy = potions_to_make * 100
 
@@ -166,81 +170,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     print("barrels planning to purchase: ")
     print(barrels)
 
-    print("resulting ml should be: red: ", red_ml, "green: ", green_ml, "blue: ", blue_ml)                     
+    #print("resulting ml should be: red: ", red_ml, "green: ", green_ml, "blue: ", blue_ml)                     
 
     return barrels # use same approach as catalog (appending to a list)
-
-                 
-
- # with db.engine.begin() as connection:
-    #         result = connection.execute(sqlalchemy.text("""SELECT SUM(red_ml_change) AS red_ml, SUM(green_ml_change) AS green_ml, SUM(blue_ml_change) AS blue_ml 
-    #                                                     FROM ml_ledger"""))
-    #         first_row = result.first()
-
-    #         red_ml = first_row.red_ml
-    #         green_ml = first_row.green_ml
-    #         blue_ml = first_row.blue_ml
-    #         print("IN BARRELS PLAN, ml in inventory: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
-
-    #         result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS gold
-    #                                                     FROM gold_ledger""")) 
-            
-    #         first_row = result.first()
-    #         gold_available = first_row.gold
-    #         print("IN BARRELS PLAN, gold: ", gold_available)
-            
-    #         # logic ideas: if ml < certain amount, try to buy if enough gold
-            
-    #         for barrel in wholesale_catalog:
-    #             print(barrel)
-    #             barrels_to_purchase = 0
-
-    #             if barrel.potion_type == [1, 0, 0, 0]: # initial amount of ml less that 1000
-    #                 # buy if gold available and until I buy 1000 ml
-    #                 while red_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
-    #                     barrels_to_purchase += 1
-    #                     red_ml += barrel.ml_per_barrel
-    #                     gold_available -= barrel.price
-            
-
-    #                 if barrels_to_purchase > 0:
-    #                     red = {
-    #                         "sku": barrel.sku,
-    #                         "quantity": barrels_to_purchase
-    #                     }
-
-    #                     barrels.append(red)
-
-    #             elif barrel.potion_type == [0, 1, 0, 0]:
-    #                 # buy if gold available and until I buy 1000 ml
-    #                 while green_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
-    #                     barrels_to_purchase += 1
-    #                     green_ml += barrel.ml_per_barrel
-    #                     gold_available -= barrel.price
-            
-    #                 if barrels_to_purchase > 0:
-    #                     green = {
-    #                         "sku": barrel.sku,
-    #                         "quantity": barrels_to_purchase
-    #                     }
-
-    #                     barrels.append(green)
-
-    #             elif barrel.potion_type == [0, 0, 1, 0]:
-    #                 # buy if gold available and until I buy 1000 ml
-    #                 while blue_ml < 1000 and gold_available >= barrel.price and barrels_to_purchase < barrel.quantity:
-    #                     barrels_to_purchase += 1
-    #                     blue_ml += barrel.ml_per_barrel
-    #                     gold_available -= barrel.price
-   
-
-    #                 if barrels_to_purchase > 0:
-    #                     blue = {
-    #                         "sku": barrel.sku,
-    #                         "quantity": barrels_to_purchase
-    #                     }
-
-    #                     barrels.append(blue)
 
 
 
