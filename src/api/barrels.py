@@ -118,8 +118,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     total_ml = red_ml + green_ml + blue_ml
 
     potential_potions = total_ml // 100
+    total_potions += potential_potions
 
-    potions_to_make = 300 - total_potions - potential_potions
+    potions_to_make = 300 - total_potions
 
     ml_to_buy = potions_to_make * 100
 
@@ -129,7 +130,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     print("potions to make: ", potions_to_make, " ml_to_buy: ", ml_to_buy, " ml_per_color: ", red_to_buy)
 
-    if total_potions < 300 and potential_potions < 300:
+    if total_potions < 300:
         for barrel in wholesale_catalog:
             print(barrel)
             barrels_to_purchase = 0
