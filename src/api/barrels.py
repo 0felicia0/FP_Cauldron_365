@@ -129,7 +129,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     print("potions to make: ", potions_to_make, " ml_to_buy: ", ml_to_buy, " ml_per_color: ", red_to_buy)
 
-    if total_potions < 300:
+    if total_potions < 300 and potential_potions < 300:
         for barrel in wholesale_catalog:
             print(barrel)
             barrels_to_purchase = 0
