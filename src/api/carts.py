@@ -7,6 +7,8 @@ from src.api import auth
 
 from datetime import datetime
 
+from enum import Enum
+
 router = APIRouter(
     prefix="/carts",
     tags=["cart"],
