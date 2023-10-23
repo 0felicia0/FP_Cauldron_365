@@ -5,6 +5,8 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
+# metadata_obj = sqlalchemy.MetaData()
+# potions = sqlalchemy.Table("potions", metadata_obj, autoload_with=engine)
 
 @router.get("/catalog/", tags=["catalog"])
 def get_catalog():
