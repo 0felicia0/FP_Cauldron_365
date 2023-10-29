@@ -97,7 +97,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             blue_ml = first_row.blue_ml
             print("IN BARRELS PLAN, ml in inventory: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml)
     
-    with db.engine.begin() as connection:
+   
             result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS gold
                                                         FROM gold_ledger""")) 
             
@@ -105,7 +105,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
             gold_available = first_row.gold
             print("IN BARRELS PLAN, gold: ", gold_available)
 
-    with db.engine.begin() as connection:
+
             result = connection.execute(sqlalchemy.text("""SELECT SUM(change) AS total_potions
                                                         FROM potion_ledger""")) 
             
