@@ -121,8 +121,8 @@ def search_orders(
             for row in result:
                 search_res.append(
                     {
-                        "previous": "",
-                        "next": "",
+                        # "previous": "",
+                        # "next": "",
                         "results": [
                             {
                                 "line_item_id": line_item_id,
