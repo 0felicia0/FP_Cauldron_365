@@ -132,23 +132,28 @@ def search_orders(
                 
                 line_item_id += 1
 
-    if cur_page == "":
+    if search_page == "":
          low = 0
          high = max(0, min(5, len(search_res)))
-         cur_page = 0
+         cur_page = 1
          previous_page = ""
          if len(search_res) > 5:
               next_page = str(cur_page + 1)
+         else:
+              next_page = ""
     else:
-        cur_page = int(search_page)
+        cur_page = int(search_page) - 1
 
-        low = (cur_page * 5) - 1
+        low = (cur_page * 5)
         high = min((cur_page * 5) + 5, len(search_res))
 
-        previous_page = str(int(cur_page) - 1)
+        previous_page = str(int(cur_page))
+        
+        if previous_page == "0":
+             previous_page = ""
 
-        if high - low > 5:
-            next_page = str(int(cur_page) + 1)
+        if len(search_res) > high:
+            next_page = str(int(cur_page) + 2)
         else:
             next_page = ""
 
