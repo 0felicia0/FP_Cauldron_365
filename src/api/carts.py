@@ -80,7 +80,7 @@ def search_orders(
     elif search_sort_options == search_sort_options.line_item_total:
         order_by = db.cart_items.c.quantity
     else:
-        order_by = db.cart_items.c.created_at
+        order_by = db.transactions.c.created_at
          
     if search_sort_order == search_sort_order.asc:
         order_by = order_by.asc()
@@ -97,11 +97,12 @@ def search_orders(
                              db.potions.c.sku.label("sku"),
                              db.potions.c.potion_id.label("potion_id"),
                              db.cart_items.c.current_price.label("price") 
-                             ).select_from(db.carts
-                             .join(db.customers, db.carts.c.customer_id == db.customers.c.id)
-                             .join(db.cart_items, db.cart_items.c.cart_id == db.carts.c.cart_id)
-                             .join(db.potions, db.potions.c.potion_id == db.cart_items.c.potion_id)
-                             .join(db.transactions, db.transactions.c.cart_id == db.carts.c.cart_id)
+                             )
+                             .select_from(db.carts
+                                .join(db.customers, db.carts.c.customer_id == db.customers.c.id)
+                                .join(db.cart_items, db.cart_items.c.cart_id == db.carts.c.cart_id)
+                                .join(db.potions, db.potions.c.potion_id == db.cart_items.c.potion_id)
+                                .join(db.transactions, db.transactions.c.cart_id == db.carts.c.cart_id)
                              )
                              .order_by(order_by)
                              )
@@ -136,8 +137,8 @@ def search_orders(
 
     # for row in result: format information in json
     return {
-         "previous": "", 
-         "next": "",
+         "previous": 1, 
+         "next": 2,
          "results": search_res
     }
 
