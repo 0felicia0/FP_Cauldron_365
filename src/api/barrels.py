@@ -4,7 +4,7 @@ from src import database as db
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from src.api import auth
-from datetime import datetime
+
 # every 12th tick presents an opportunity to buy a barrel
 
 router = APIRouter(
@@ -27,9 +27,6 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     """ """
     print(barrels_delivered)
 
-    # put variables here, not inside connection
-    # for loop out here
-    # print results
     red_ml = 0
     green_ml = 0
     blue_ml = 0
@@ -50,11 +47,8 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
             else: 
                 raise Exception("Invalid potion")
             
-    # time and date stuff
-    today = datetime.now()
-    day_time = today.strftime("%m/%d/%Y %H:%M:%S")
             
-    description = "Delivering barrels @ " + day_time + " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml)
+    description = "Delivering barrels: "+ " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml)
              
     print(description)
 
@@ -170,8 +164,6 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
 
     print("barrels planning to purchase: ")
     print(barrels)
-
-    #print("resulting ml should be: red: ", red_ml, "green: ", green_ml, "blue: ", blue_ml)                     
 
     return barrels # use same approach as catalog (appending to a list)
 

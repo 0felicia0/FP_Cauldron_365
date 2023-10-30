@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from src.api import auth
 
-from datetime import datetime
 
 from enum import Enum
 
@@ -89,7 +88,6 @@ def search_orders(
 
     # create a fatty join sequence: tables include customers, potions, cart_items
     # get all first, then filter
-   
     
     stmt = (sqlalchemy.select(db.customers.c.name, 
                              db.cart_items.c.quantity.label("quantity"), 
@@ -165,21 +163,6 @@ def search_orders(
          "results": search_res[low:high]
     }
 
-    # return {
-    #     "previous": "",
-    #     "next": "",
-    #     "results": [
-    #         {
-    #             "line_item_id": 1,
-    #             "item_sku": "1 oblivion potion",
-    #             "customer_name": "Scaramouche",
-    #             "line_item_total": 50,
-    #             "timestamp": "2021-01-01T00:00:00Z",
-    #         }
-    #     ],
-    # }
-
-# issue definitely with checking out multiple carts: race condition
 
 class NewCart(BaseModel):
     customer: str
@@ -236,11 +219,8 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     gold_paid = 0
     potions_bought = 0
 
-    # time and date stuff
-    today = datetime.now()
-    day_time = today.strftime("%m/%d/%Y %H:%M:%S")
 
-    description = "Cart Checkout @ " + day_time + " cart_id: " + str(cart_id) + " payment: " + cart_checkout.payment
+    description = "Cart Checkout: "  + "cart_id: " + str(cart_id) + " payment: " + cart_checkout.payment
     #description = "test"
 
     with db.engine.begin() as connection:

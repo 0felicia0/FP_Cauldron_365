@@ -21,19 +21,19 @@ def reset():
     with db.engine.begin() as connection:
             # reset ledgers and transaction  
             connection.execute(sqlalchemy.text("TRUNCATE transactions CASCADE"))           
-            # connection.execute(sqlalchemy.text("TRUNCATE potion_ledger"))
-            # connection.execute(sqlalchemy.text("TRUNCATE gold_ledger"))
-            # connection.execute(sqlalchemy.text("TRUNCATE ml_ledger"))
             
             # reset carts and cart_items too
             connection.execute(sqlalchemy.text("TRUNCATE carts CASCADE"))
+            connection.execute(sqlalchemy.text("TRUNCATE customers CASCADE")) 
 
             description = "initial values after reset"
             transaction_id = connection.execute(sqlalchemy.text("INSERT INTO transactions (description) VALUES (:description) RETURNING transaction_id"), {"description": description}).scalar()
 
             connection.execute(sqlalchemy.text("INSERT INTO gold_ledger (change, transaction_id) VALUES (100, :transaction_id)"), {"transaction_id": transaction_id})
             connection.execute(sqlalchemy.text("INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) VALUES (:transaction_id, 0, 0, 0)"), {"transaction_id": transaction_id})
-            for i in range(1, 8):
+            for i in range(1, 7):
+                if i == 6:
+                     i += 1
                 connection.execute(sqlalchemy.text("INSERT INTO potion_ledger (change, transaction_id, potion_id) VALUES (0, :transaction_id, :potion_id)"), {"transaction_id": transaction_id, "potion_id": i})       
             
     return "OK"
@@ -45,7 +45,7 @@ def get_shop_info():
 
     # TODO: Change me!
     return {
-        "shop_name": "Felicia's Potion Shop",
+        "shop_name": "Casa de la Potions",
         "shop_owner": "Felicia Patel",
     }
 

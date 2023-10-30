@@ -5,8 +5,7 @@ from fastapi import APIRouter, Depends
 from enum import Enum
 from pydantic import BaseModel
 from src.api import auth
-from datetime import date
-from datetime import datetime
+
 
 
 # every alternate tick provides an opportunity to make potions
@@ -38,11 +37,7 @@ def post_deliver_bottles(potions_delivered: list[PotionInventory]):
     # process: once potions are delivered, update the database values
     # think about how you want to read the transaction logs and work from there
 
-    # time and date stuff
-    today = datetime.utcnow()
-    day_time = today.strftime("%m/%d/%Y %H:%M:%S")
-
-    description = "Delivering potions @ " + day_time
+    description = "Delivering potions"
 
     with db.engine.begin() as connection:
             
