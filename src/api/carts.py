@@ -25,7 +25,7 @@ class search_sort_order(str, Enum):
     asc = "asc"
     desc = "desc"   
 
-line_item_id = 1
+
 
 @router.get("/search/", tags=["search"])
 def search_orders(
@@ -117,7 +117,7 @@ def search_orders(
     
     with db.engine.begin() as connection:
             result = connection.execute(stmt)
-    
+            line_item_id = 1
             for row in result:
                 search_res.append(
                     {
@@ -133,8 +133,8 @@ def search_orders(
                             }
                         ]
                     }
-                    line_item_id += 1
                 )
+                line_item_id += 1
     
 
     
