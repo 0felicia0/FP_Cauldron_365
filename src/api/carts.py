@@ -119,28 +119,28 @@ def search_orders(
             result = connection.execute(stmt)
             line_item_id = 1
             for row in result:
-                search_res.append(
-                    {
-                        # "previous": "",
-                        # "next": "",
-                        "results": [
-                            {
-                                "line_item_id": line_item_id,
-                                "item_sku": str(row.quantity) + " " + row.sku,
-                                "customer_name": row.name,
-                                "line_item_total": row.quantity * row.price,
-                                "timestamp": row.time,
-                            }
-                        ]
-                    }
-                )
+                search_res.append(  
+                                    {
+                                        "line_item_id": line_item_id,
+                                        "item_sku": str(row.quantity) + " " + row.sku,
+                                        "customer_name": row.name,
+                                        "line_item_total": row.quantity * row.price,
+                                        "timestamp": row.time,
+                                    }
+                                )
+                
                 line_item_id += 1
     
 
     
 
     # for row in result: format information in json
-    return search_res
+    return {
+         "previous": "", 
+         "next": "",
+         "results": search_res
+    }
+
     # return {
     #     "previous": "",
     #     "next": "",
