@@ -131,15 +131,33 @@ def search_orders(
                                 )
                 
                 line_item_id += 1
-    
 
-    
+    if cur_page == "":
+         low = 0
+         high = max(0, min(5, len(search_res)))
+         cur_page = 0
+         previous_page = ""
+         if len(search_res) > 5:
+              next_page = str(cur_page + 1)
+    else:
+        cur_page = int(search_page)
+
+        low = (cur_page * 5) - 1
+        high = min((cur_page * 5) + 5, len(search_res))
+
+        previous_page = str(int(cur_page) - 1)
+
+        if high - low > 5:
+            next_page = str(int(cur_page) + 1)
+        else:
+            next_page = ""
+
 
     # for row in result: format information in json
     return {
-         "previous": "1", 
-         "next": "2",
-         "results": search_res
+         "previous": previous_page, 
+         "next": next_page,
+         "results": search_res[low:high]
     }
 
     # return {
