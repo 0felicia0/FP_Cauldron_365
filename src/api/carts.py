@@ -69,7 +69,7 @@ def search_orders(
     #         JOIN cart_items ON carts.cart_id = cart_items.cart_id
     #         JOIN potions ON cart_items.potion_id = potions.potion_id
     #         """
-    order_by = db.cart_items.c.created_at
+    
     #find which attribute to sort by
     if search_sort_options == search_sort_options.customer_name:
         order_by = db.customers.c.name
@@ -77,7 +77,8 @@ def search_orders(
         order_by = db.potions.c.sku
     elif search_sort_options == search_sort_options.line_item_total:
         order_by = db.cart_items.c.quantity
-
+    else:
+        order_by = db.cart_items.c.created_at
          
     if search_sort_order == search_sort_order.asc:
         order_by = order_by.asc()
@@ -89,42 +90,59 @@ def search_orders(
    
     
     stmt = (sqlalchemy.select(db.customers.c.name, 
-                             db.cart_items.c.quantity, 
-                             db.cart_items.c.created_at,
-                             db.potions.c.sku,
-                             db.potions.c.price 
-                             ).select_from(db.carts)
+                             db.cart_items.c.quantity.label("quantity"), 
+                             db.transactions.c.created_at.label("time"),
+                             db.potions.c.sku.label("sku"),
+                             db.potions.c.potion_id.label("potion_id"),
+                             db.cart_items.c.current_price.label("price") 
+                             ).select_from(db.carts
                              .join(db.customers, db.carts.c.customer_id == db.customers.c.id)
                              .join(db.cart_items, db.cart_items.c.cart_id == db.carts.c.cart_id)
                              .join(db.potions, db.potions.c.potion_id == db.cart_items.c.potion_id)
+                             .join(db.transactions, db.transactions.c.cart_id == db.carts.c.cart_id)
+                             )
                              .order_by(order_by)
                              )
-    
+    search_res = []
     
     with db.engine.begin() as connection:
             result = connection.execute(stmt)
     
             for row in result:
-                print(row)
+                search_res.append(
+                    {
+                        "previous": "",
+                        "next": "",
+                        "results": [
+                            {
+                                "line_item_id": row.potion_id,
+                                "item_sku": str(row.quantity) + " " + row.sku,
+                                "customer_name": row.name,
+                                "line_item_total": row.quantity * row.price,
+                                "timestamp": row.time,
+                            }
+                        ]
+                    }
+                )
     
 
     # filter only if name parameter is passed
 
     # for row in result: format information in json
-    search_res = []
-    return {
-        "previous": "",
-        "next": "",
-        "results": [
-            {
-                "line_item_id": 1,
-                "item_sku": "1 oblivion potion",
-                "customer_name": "Scaramouche",
-                "line_item_total": 50,
-                "timestamp": "2021-01-01T00:00:00Z",
-            }
-        ],
-    }
+    return search_res
+    # return {
+    #     "previous": "",
+    #     "next": "",
+    #     "results": [
+    #         {
+    #             "line_item_id": 1,
+    #             "item_sku": "1 oblivion potion",
+    #             "customer_name": "Scaramouche",
+    #             "line_item_total": 50,
+    #             "timestamp": "2021-01-01T00:00:00Z",
+    #         }
+    #     ],
+    # }
 
 # issue definitely with checking out multiple carts: race condition
 
@@ -170,7 +188,7 @@ def set_item_quantity(cart_id: int, item_sku: str, cart_item: CartItem):
     """"""
     # change to reflect lecture notes
     with db.engine.begin() as connection:
-            connection.execute(sqlalchemy.text("INSERT INTO cart_items (cart_id, quantity, potion_id) SELECT :cart_id, :quantity, potions.potion_id FROM potions WHERE potions.sku = :item_sku"), {"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku})
+            connection.execute(sqlalchemy.text("INSERT INTO cart_items (cart_id, quantity, potion_id, current_price) SELECT :cart_id, :quantity, potions.potion_id, potions.price FROM potions WHERE potions.sku = :item_sku"), {"cart_id": cart_id, "quantity": cart_item.quantity, "item_sku": item_sku})
     
     print("adding to cart: ", item_sku, " quantity: ", cart_item.quantity)       
     return "OK"
@@ -193,13 +211,13 @@ def checkout(cart_id: int, cart_checkout: CartCheckout):
     with db.engine.begin() as connection:
             # objectives: subtract items in the cart from inventory, add gold
             transaction_id = connection.execute(sqlalchemy.text("""
-                                                                INSERT INTO transactions (description)
-                                                                VALUES (:description)
+                                                                INSERT INTO transactions (description, cart_id)
+                                                                VALUES (:description, :cart_id)
                                                                 RETURNING transaction_id
-                                                                """), {"description": description}).scalar()
+                                                                """), {"description": description, "cart_id": cart_id}).scalar()
             
             # change to insert into ledger log
-            # insert into ledger the change, trans_id and potion_id of every item in the specified cart
+            # insert into ledger the change, trans_id and potion_id of every item in the specified cart 
             # need: quantity of each potion bought, id returned for ledger
             
             result = connection.execute(sqlalchemy.text("""
