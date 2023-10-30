@@ -25,6 +25,8 @@ class search_sort_order(str, Enum):
     asc = "asc"
     desc = "desc"   
 
+line_item_id = 1
+
 @router.get("/search/", tags=["search"])
 def search_orders(
     customer_name: str = "",
@@ -123,7 +125,7 @@ def search_orders(
                         "next": "",
                         "results": [
                             {
-                                "line_item_id": row.potion_id,
+                                "line_item_id": line_item_id,
                                 "item_sku": str(row.quantity) + " " + row.sku,
                                 "customer_name": row.name,
                                 "line_item_total": row.quantity * row.price,
@@ -131,6 +133,7 @@ def search_orders(
                             }
                         ]
                     }
+                    line_item_id += 1
                 )
     
 
