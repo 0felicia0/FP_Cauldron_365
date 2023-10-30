@@ -48,6 +48,8 @@ def get_catalog():
                       "potion_type": row.type,
                 }
 
+                catalog.append(potion)
+
     print("CATALOG: " ,catalog)
     return catalog           
 
