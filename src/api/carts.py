@@ -137,8 +137,8 @@ def search_orders(
 
     # for row in result: format information in json
     return {
-         "previous": 1, 
-         "next": 2,
+         "previous": "1", 
+         "next": "2",
          "results": search_res
     }
 
