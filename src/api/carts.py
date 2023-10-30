@@ -73,16 +73,16 @@ def search_orders(
     #         """
     
     #find which attribute to sort by
-    if search_sort_options == search_sort_options.customer_name:
+    if sort_col is search_sort_options.customer_name:
         order_by = db.customers.c.name
-    elif search_sort_options == search_sort_options.item_sku:
+    elif sort_col == search_sort_options.item_sku:
         order_by = db.potions.c.sku
-    elif search_sort_options == search_sort_options.line_item_total:
+    elif sort_col == search_sort_options.line_item_total:
         order_by = db.cart_items.c.quantity
     else:
         order_by = db.transactions.c.created_at
          
-    if search_sort_order == search_sort_order.asc:
+    if sort_order == search_sort_order.asc:
         order_by = order_by.asc()
     else:
         order_by = order_by.desc()
@@ -148,7 +148,7 @@ def search_orders(
         high = min((cur_page * 5) + 5, len(search_res))
 
         previous_page = str(int(cur_page))
-        
+
         if previous_page == "0":
              previous_page = ""
 
