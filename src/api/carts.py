@@ -103,6 +103,14 @@ def search_orders(
                              )
                              .order_by(order_by)
                              )
+    
+    # filter only if name parameter is passed
+    if customer_name != "":
+        stmt = stmt.where(db.customers.c.name.ilike(f"%{customer_name}%"))
+    # filter only if name parameter is passed
+    if potion_sku != "":
+        stmt = stmt.where(db.potions.c.sku.ilike(f"%{potion_sku}%"))
+
     search_res = []
     
     with db.engine.begin() as connection:
@@ -126,7 +134,7 @@ def search_orders(
                 )
     
 
-    # filter only if name parameter is passed
+    
 
     # for row in result: format information in json
     return search_res
