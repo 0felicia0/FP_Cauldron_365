@@ -37,8 +37,9 @@ def get_catalog():
                                                         .join(db.potion_ledger, db.potions.c.potion_id == db.potion_ledger.c.potion_id)
                                                         .group_by(db.potions.c.potion_id)
                                                         .having(func.sum(db.potion_ledger.c.change) > 0)
+                                                        .order_by(-db.potions.c.price)
                                         )
-            
+            limit = 0
             for row in result:
                 potion = {
                       "sku": row.sku,
@@ -48,7 +49,9 @@ def get_catalog():
                       "potion_type": row.type,
                 }
 
-                catalog.append(potion)
+                if limit < 6:
+                  catalog.append(potion)
+                  limit += 1
 
     print("CATALOG: " ,catalog)
     return catalog           
