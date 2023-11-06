@@ -161,36 +161,44 @@ def get_bottle_plan():
                         bottles.append(bottle)         
 
     if dark_ml // 100 > 0:
-        bottle = {
-                    "potion_type": [0, 0, 0, 100],
-                    "quantity": dark_ml//100
-                }
+        left_over = 300 - total_potions
+        if dark_ml//100 <= left_over:
+            bottle = {
+                        "potion_type": [0, 0, 0, 100],
+                        "quantity": dark_ml//100
+                    }
 
-        bottles.append(bottle)
+            bottles.append(bottle)
+
+            total_potions += dark_ml // 100
     
     if red_ml // 100 > 0:
-        bottle = {
-                    "potion_type": [100, 0, 0, 0],
-                    "quantity": red_ml//100
-                }
+        left_over = 300 - total_potions
+        if red_ml//100 <= left_over:
+            bottle = {
+                        "potion_type": [100, 0, 0, 0],
+                        "quantity": red_ml//100
+                    }
 
-        bottles.append(bottle)
+            bottles.append(bottle)
 
-    if green_ml // 100 > 0:
-        bottle = {
-                    "potion_type": [0, 100, 0, 0],
-                    "quantity": green_ml//100
-                }
+            total_potions += red_ml // 100
 
-        bottles.append(bottle)
+    # if green_ml // 100 > 0:
+    #     bottle = {
+    #                 "potion_type": [0, 100, 0, 0],
+    #                 "quantity": green_ml//100
+    #             }
+
+    #     bottles.append(bottle)
     
-    if blue_ml // 100 > 0:
-        bottle = {
-                    "potion_type": [0, 0, 100, 0],
-                    "quantity": blue_ml//100
-                }
+    # if blue_ml // 100 > 0:
+    #     bottle = {
+    #                 "potion_type": [0, 0, 100, 0],
+    #                 "quantity": blue_ml//100
+    #             }
 
-        bottles.append(bottle)
+    #     bottles.append(bottle)
 
     print("BOTTLER/PLAN: result of bottling: ")
     print(bottles)
