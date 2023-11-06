@@ -30,6 +30,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
     red_ml = 0
     green_ml = 0
     blue_ml = 0
+    dark_ml = 0
     gold = 0
     
     for barrel in barrels_delivered:
@@ -43,12 +44,14 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                  
             elif barrel.potion_type == [0, 0, 1, 0]:
                 blue_ml += barrel.ml_per_barrel * barrel.quantity
-                 
+
+            elif barrel.potion_type == [0, 0, 0, 1]:
+                dark_ml += barrel.ml_per_barrel * barrel.quantity     
             else: 
                 raise Exception("Invalid potion")
             
             
-    description = "Delivering barrels: "+ " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml)
+    description = "Delivering barrels: "+ " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml) + " dark_ml: " + dark_ml
              
     print(description)
 
@@ -61,8 +64,8 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                                                                 VALUES (:description) 
                                                                 RETURNING transaction_id"""), {"description": description}).scalar()
             
-            connection.execute(sqlalchemy.text("""INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) 
-                                               VALUES (:transaction_id, :red_ml, :green_ml, :blue_ml)"""), {"transaction_id": transaction_id, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml})
+            connection.execute(sqlalchemy.text("""INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change, dark_ml_change) 
+                                               VALUES (:transaction_id, :red_ml, :green_ml, :blue_ml, :dark_ml)"""), {"transaction_id": transaction_id, "red_ml": red_ml, "green_ml": green_ml, "blue_ml": blue_ml, "dark_ml": dark_ml})
 
 
             connection.execute(sqlalchemy.text("""
