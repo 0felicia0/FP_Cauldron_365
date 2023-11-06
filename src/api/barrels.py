@@ -51,7 +51,7 @@ def post_deliver_barrels(barrels_delivered: list[Barrel]):
                 raise Exception("Invalid potion")
             
             
-    description = "Delivering barrels: "+ " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml) + " dark_ml: " + dark_ml
+    description = "Delivering barrels: "+ " red_ml: " + str(red_ml) + " green_ml: " + str(green_ml) + " blue_ml: " + str(blue_ml) + " dark_ml: " + str(dark_ml)
              
     print(description)
 
