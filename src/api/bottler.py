@@ -89,7 +89,7 @@ def get_bottle_plan():
                                                         FROM potions
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
                                                         GROUP BY potions.potion_id, potions.type                                                       
-                                                        ORDER BY potions.potion_id DESC;
+                                                        ORDER BY potions.potion_id;
                                                         """))       
     #HAVING SUM(potion_ledger.change) < 300 / COUNT(potions.type)        
             potions = result.fetchall()
@@ -98,7 +98,7 @@ def get_bottle_plan():
 
             potion_types = 0
             for potion in potions:
-                 if potion.quantity < 300//potion_types_available:
+                 if potion.quantity < 300//potion_types_available and potion.type != [0, 0, 0, 100]:
                       potion_types += 1
 
             result = connection.execute(sqlalchemy.text("SELECT SUM(change) AS total_potions FROM potion_ledger"))
@@ -120,7 +120,7 @@ def get_bottle_plan():
             dark_ml = ml.dark_ml
 
             print("in bottler, available mL: red: ", red_ml, " green: ", green_ml, " blue: ", blue_ml, " dark: ", dark_ml)
-            total_ml = red_ml + green_ml + blue_ml + dark_ml
+            total_ml = red_ml + green_ml + blue_ml
             max_bottles = (total_ml) // 100
             
             bottles_per_type = max_bottles//potion_types
@@ -140,7 +140,7 @@ def get_bottle_plan():
                 
                 bottled = 0
 
-                if potion.quantity < 300//potion_types_available:
+                if potion.quantity < 300//potion_types_available and potion.type != [0, 0, 0, 100]:
                     print(potion.type)
                     while (total_potions < 300 and bottled < bottles_per_type and potion.type[0] <= red_ml and potion.type[1] <= green_ml and potion.type[2] <= blue_ml and potion.type[3] <= dark_ml):
                         
@@ -158,8 +158,40 @@ def get_bottle_plan():
                             "quantity": bottled
                         }
 
-                        bottles.append(bottle)                
-            
+                        bottles.append(bottle)         
+
+    if dark_ml // 100 > 0:
+        bottle = {
+                    "potion_type": [0, 0, 0, 100],
+                    "quantity": dark_ml//100
+                }
+
+        bottles.append(bottle)
+    
+    if red_ml // 100 > 0:
+        bottle = {
+                    "potion_type": [100, 0, 0, 0],
+                    "quantity": red_ml//100
+                }
+
+        bottles.append(bottle)
+
+    if green_ml // 100 > 0:
+        bottle = {
+                    "potion_type": [0, 100, 0, 0],
+                    "quantity": green_ml//100
+                }
+
+        bottles.append(bottle)
+    
+    if blue_ml // 100 > 0:
+        bottle = {
+                    "potion_type": [0, 0, 100, 0],
+                    "quantity": blue_ml//100
+                }
+
+        bottles.append(bottle)
+
     print("BOTTLER/PLAN: result of bottling: ")
     print(bottles)
     return bottles

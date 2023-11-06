@@ -157,7 +157,11 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
                     #blue_ml += barrel.ml_per_barrel
                     gold_available -= barrel.price
                     blue_to_buy -= barrel.ml_per_barrel
-
+            # dark
+            elif barrel.potion_type == [0, 0, 0, 1] and gold_available >= barrel.price:
+                # buy if gold available and until I buy 1000 ml
+                barrels_to_purchase += 1
+                gold_available -= barrel.price
 
             if barrels_to_purchase > 0:
                 barrel = {
