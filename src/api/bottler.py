@@ -89,7 +89,7 @@ def get_bottle_plan():
                                                         FROM potions
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
                                                         GROUP BY potions.potion_id, potions.type                                                       
-                                                        ORDER BY potions.potion_id DESC;
+                                                        ORDER BY potions.potion_id;
                                                         """))       
     #HAVING SUM(potion_ledger.change) < 300 / COUNT(potions.type)        
             potions = result.fetchall()
