@@ -38,8 +38,9 @@ def get_catalog():
                                                         .group_by(db.potions.c.potion_id)
                                                         .having(func.sum(db.potion_ledger.c.change) > 0)
                                                         .order_by(-db.potions.c.price)
+                                                        .limit(6)
                                         )
-            limit = 0
+            #limit = 0
             for row in result:
                 potion = {
                       "sku": row.sku,
@@ -49,9 +50,9 @@ def get_catalog():
                       "potion_type": row.type,
                 }
 
-                if limit < 6:
-                  catalog.append(potion)
-                  limit += 1
+                # if limit < 6:
+                catalog.append(potion)
+                #   limit += 1
 
     print("CATALOG: " ,catalog)
     return catalog           
