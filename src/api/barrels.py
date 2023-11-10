@@ -125,9 +125,9 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     green_to_buy = (ml_to_buy // 3) * 2 
     blue_to_buy = (ml_to_buy // 3) * 2 
 
-    #red_to_buy = 8000
-    #green_to_buy = 8000
-    # blue_to_buy = 3000
+    red_to_buy = 8000
+    green_to_buy = 8000
+    blue_to_buy = 8000
     
 
     print("total_potions: ", total_potions, " potions to make: ", potions_to_make, " ml_to_buy: ", ml_to_buy, " ml_per_color: ", red_to_buy)
