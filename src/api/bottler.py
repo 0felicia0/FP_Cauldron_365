@@ -191,18 +191,23 @@ def get_bottle_plan():
     #             }
 
     #     bottles.append(bottle)
-    
-    # if blue_ml // 100 > 0:
-    #     left_over = 300 - total_potions
-    #     if blue_ml//100 <= left_over:
-    #         bottle = {
-    #                     "potion_type": [100, 0, 0, 0],
-    #                     "quantity": red_ml//100
-    #                 }
+    blue_bottles = blue_ml // 100
+    # left_over = 300 - total_potions
+    left_over = 20
+    print("total: ", total_potions, " left over: ", left_over, "blue bottles: ", blue_bottles)
+    to_bottle = min(left_over, blue_bottles)
 
-    #         bottles.append(bottle)
+    print("to bottle: ", to_bottle)
 
-    #         total_potions += red_ml // 100
+    if to_bottle > 0:
+            bottle = {
+                        "potion_type": [100, 0, 0, 0],
+                        "quantity": to_bottle
+                    }
+
+            bottles.append(bottle)
+
+            total_potions += to_bottle
 
     print("BOTTLER/PLAN: result of bottling: ")
     print(bottles)
