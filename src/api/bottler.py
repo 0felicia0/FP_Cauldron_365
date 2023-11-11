@@ -89,7 +89,7 @@ def get_bottle_plan():
                                                         FROM potions
                                                         JOIN potion_ledger ON potions.potion_id = potion_ledger.potion_id
                                                         GROUP BY potions.potion_id, potions.type                                                       
-                                                        ORDER BY potions.potion_id;
+                                                        ORDER BY potions.potion_id desc;
                                                         """))       
     #HAVING SUM(potion_ledger.change) < 300 / COUNT(potions.type)        
             potions = result.fetchall()
@@ -124,6 +124,8 @@ def get_bottle_plan():
             max_bottles = (total_ml) // 100
             
             bottles_per_type = max_bottles//potion_types
+
+            bottles_per_type = min(300//potion_types_available, bottles_per_type)
 
             if bottles_per_type == 0 and max_bottles > 0:
                 bottles_per_type = max_bottles
