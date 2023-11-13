@@ -22,7 +22,7 @@ def get_inventory():
             first_row = result.first()
             total_potions = first_row.total_potions
 
-            result = connection.execute(sqlalchemy.text("SELECT SUM(red_ml_change + green_ml_change + blue_ml_change) AS total_ml FROM ml_ledger"))
+            result = connection.execute(sqlalchemy.text("SELECT SUM(red_ml_change + green_ml_change + blue_ml_change + dark_ml_change) AS total_ml FROM ml_ledger"))
             first_row = result.first()
             total_ml = first_row.total_ml
 
