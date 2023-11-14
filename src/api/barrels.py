@@ -125,6 +125,7 @@ def get_wholesale_purchase_plan(wholesale_catalog: list[Barrel]):
     green_to_buy = (ml_to_buy // 3) 
     blue_to_buy = (ml_to_buy // 3) 
 
+ # adjust if needed
     red_to_buy = 8000
     green_to_buy = 8000
     #blue_to_buy = 20000
