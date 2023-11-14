@@ -93,11 +93,13 @@ def get_bottle_plan():
                                                         """))       
     #HAVING SUM(potion_ledger.change) < 300 / COUNT(potions.type)        
             potions = result.fetchall()
-            print(potions)
             potion_types_available = len(potions)
+
+            print("potion types total: ", potion_types_available)
 
             potion_types = 0
             for potion in potions:
+                 print(potion)
                  if potion.quantity < 300//potion_types_available:
                       potion_types += 1
 

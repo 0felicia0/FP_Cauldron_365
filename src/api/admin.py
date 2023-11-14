@@ -31,7 +31,7 @@ def reset():
 
             connection.execute(sqlalchemy.text("INSERT INTO gold_ledger (change, transaction_id) VALUES (100, :transaction_id)"), {"transaction_id": transaction_id})
             connection.execute(sqlalchemy.text("INSERT INTO ml_ledger (transaction_id, red_ml_change, green_ml_change, blue_ml_change) VALUES (:transaction_id, 0, 0, 0)"), {"transaction_id": transaction_id})
-            for i in range(1, 7):
+            for i in range(1, 8):
                 if i == 6:
                      i += 1
                 connection.execute(sqlalchemy.text("INSERT INTO potion_ledger (change, transaction_id, potion_id) VALUES (0, :transaction_id, :potion_id)"), {"transaction_id": transaction_id, "potion_id": i})       
